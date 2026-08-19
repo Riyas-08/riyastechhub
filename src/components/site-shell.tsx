@@ -1,4 +1,3 @@
-<<<<<<< keep
 import { Link } from "@tanstack/react-router";
 import { CircuitBoard, Menu } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -117,5 +116,3 @@ export function PageShell({
     </>
   );
 }
-=======
->>>>>>> 
