@@ -65,7 +65,7 @@ export async function confirmOtp(input: {
   code: string;
   username: string;
   district: string;
-  referralCode?: string;
+  referralCode?: string | undefined;
 }) {
   const { data: rows, error } = await supabaseAdmin
     .from("otp_codes")
@@ -232,7 +232,7 @@ export async function storeProject(input: {
   memberId: string | null;
   title: string;
   description: string;
-  components: unknown;
+  components?: unknown;
 }) {
   await supabaseAdmin.from("projects").insert({
     member_id: input.memberId,
