@@ -14,7 +14,189 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      feedback: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string | null
+          message: string | null
+          rating: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id?: string | null
+          message?: string | null
+          rating: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string | null
+          message?: string | null
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      members: {
+        Row: {
+          created_at: string
+          credits: number
+          department: string | null
+          district: string
+          id: string
+          mobile: string
+          referral_code: string
+          referred_by: string | null
+          username: string
+          year_of_study: string | null
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          department?: string | null
+          district: string
+          id?: string
+          mobile: string
+          referral_code: string
+          referred_by?: string | null
+          username: string
+          year_of_study?: string | null
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          department?: string | null
+          district?: string
+          id?: string
+          mobile?: string
+          referral_code?: string
+          referred_by?: string | null
+          username?: string
+          year_of_study?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      otp_codes: {
+        Row: {
+          attempts: number
+          code: string
+          consumed: boolean
+          created_at: string
+          expires_at: string
+          id: string
+          mobile: string
+        }
+        Insert: {
+          attempts?: number
+          code: string
+          consumed?: boolean
+          created_at?: string
+          expires_at: string
+          id?: string
+          mobile: string
+        }
+        Update: {
+          attempts?: number
+          code?: string
+          consumed?: boolean
+          created_at?: string
+          expires_at?: string
+          id?: string
+          mobile?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          components: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          member_id: string | null
+          title: string
+        }
+        Insert: {
+          components?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          member_id?: string | null
+          title: string
+        }
+        Update: {
+          components?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          member_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          credits_awarded: number
+          id: string
+          referred_id: string
+          referrer_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          referred_id: string
+          referrer_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          referred_id?: string
+          referrer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
