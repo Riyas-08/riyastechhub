@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as EnterRouteImport } from './routes/enter'
+import { Route as GuideRouteImport } from './routes/guide'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RiyaRouteImport } from './routes/riya'
 
@@ -42,6 +43,11 @@ const EnterRoute = EnterRouteImport.update({
   path: '/enter',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuideRoute = GuideRouteImport.update({
+  id: '/guide',
+  path: '/guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/analyze': typeof AnalyzeRoute
   '/components': typeof ComponentsRoute
   '/enter': typeof EnterRoute
+  '/guide': typeof GuideRoute
   '/profile': typeof ProfileRoute
   '/riya': typeof RiyaRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/analyze': typeof AnalyzeRoute
   '/components': typeof ComponentsRoute
   '/enter': typeof EnterRoute
+  '/guide': typeof GuideRoute
   '/profile': typeof ProfileRoute
   '/riya': typeof RiyaRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/analyze': typeof AnalyzeRoute
   '/components': typeof ComponentsRoute
   '/enter': typeof EnterRoute
+  '/guide': typeof GuideRoute
   '/profile': typeof ProfileRoute
   '/riya': typeof RiyaRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/components'
     | '/enter'
+    | '/guide'
     | '/profile'
     | '/riya'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/components'
     | '/enter'
+    | '/guide'
     | '/profile'
     | '/riya'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/components'
     | '/enter'
+    | '/guide'
     | '/profile'
     | '/riya'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   AnalyzeRoute: typeof AnalyzeRoute
   ComponentsRoute: typeof ComponentsRoute
   EnterRoute: typeof EnterRoute
+  GuideRoute: typeof GuideRoute
   ProfileRoute: typeof ProfileRoute
   RiyaRoute: typeof RiyaRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guide': {
+      id: '/guide'
+      path: '/guide'
+      fullPath: '/guide'
+      preLoaderRoute: typeof GuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyzeRoute: AnalyzeRoute,
   ComponentsRoute: ComponentsRoute,
   EnterRoute: EnterRoute,
+  GuideRoute: GuideRoute,
   ProfileRoute: ProfileRoute,
   RiyaRoute: RiyaRoute,
 }
