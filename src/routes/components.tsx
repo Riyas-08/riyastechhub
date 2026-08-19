@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { PageShell } from "@/components/site-shell";
 import { Button } from "@/components/ui/button";
 import { useHydrated, useProject } from "@/lib/session";
-import { STORES, buildSearchUrl, estimatePrice } from "@/lib/vendors";
+import { VENDORS, vendorPrice } from "@/lib/vendors";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/components")({
@@ -35,7 +35,10 @@ function ComponentsPage() {
     () =>
       components
         .filter((c) => selected[c.name])
-        .reduce((sum, c) => sum + c.estimatedPriceInr * c.quantity, 0),
+        .reduce(
+          (sum, c) => sum + c.estimatedPriceInr * (parseInt(c.quantity, 10) || 1),
+          0,
+        ),
     [components, selected],
   );
 
@@ -73,7 +76,7 @@ function ComponentsPage() {
                   <h2 className="truncate font-display text-base font-semibold sm:text-lg">
                     {c.name}
                   </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{c.purpose}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{c.role}</p>
                   <p className="mt-2 text-xs uppercase tracking-widest text-primary">
                     {c.category} · Qty {c.quantity} · ≈ ₹{c.estimatedPriceInr}
                   </p>
@@ -92,17 +95,18 @@ function ComponentsPage() {
               </div>
 
               <div className="mt-4 grid gap-2 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-3">
-                {STORES.map((store) => (
+                {VENDORS.map((store) => (
                   <a
                     key={store.id}
-                    href={buildSearchUrl(store, c.searchQuery || c.name)}
+                    href={store.search(c.searchQuery || c.name)}
                     target="_blank"
                     rel="noopener noreferrer"
+                    title={store.note}
                     className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm transition-colors hover:border-primary/60 hover:text-primary"
                   >
                     <span className="min-w-0 truncate">{store.name}</span>
                     <span className="ml-2 flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
-                      ≈ ₹{estimatePrice(c.estimatedPriceInr, store)}
+                      ≈ ₹{vendorPrice(c.estimatedPriceInr, store.factor)}
                       <ExternalLink className="h-3 w-3" />
                     </span>
                   </a>

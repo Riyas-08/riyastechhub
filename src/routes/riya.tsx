@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { PageShell } from "@/components/site-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { chatWithRiya } from "@/lib/ai.functions";
+import { askRiya } from "@/lib/ai.functions";
 import { useProject } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 function RiyaPage() {
   const project = useProject();
-  const chat = useServerFn(chatWithRiya);
+  const chat = useServerFn(askRiya);
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
@@ -44,13 +44,8 @@ function RiyaPage() {
 
   const mutation = useMutation({
     mutationFn: async (history: Msg[]) =>
-      chat({
-        data: {
-          messages: history,
-          ...(project?.title ? { projectContext: project.title } : {}),
-        },
-      }),
-    onSuccess: (reply) => setMessages((m) => [...m, { role: "assistant", content: reply.content }]),
+      chat({ data: { messages: history, context: project?.title ?? "" } }),
+    onSuccess: (reply) => setMessages((m) => [...m, { role: "assistant", content: reply }]),
     onError: (e: Error) => toast.error(e.message),
   });
 
