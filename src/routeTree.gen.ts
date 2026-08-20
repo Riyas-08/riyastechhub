@@ -13,9 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as ComponentsRouteImport } from './routes/components'
+import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as EnterRouteImport } from './routes/enter'
 import { Route as GuideRouteImport } from './routes/guide'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as RiyaRouteImport } from './routes/riya'
 
 const IndexRoute = IndexRouteImport.update({
@@ -38,6 +40,11 @@ const ComponentsRoute = ComponentsRouteImport.update({
   path: '/components',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConnectRoute = ConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnterRoute = EnterRouteImport.update({
   id: '/enter',
   path: '/enter',
@@ -53,6 +60,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReferralsRoute = ReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RiyaRoute = RiyaRouteImport.update({
   id: '/riya',
   path: '/riya',
@@ -64,9 +76,11 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/analyze': typeof AnalyzeRoute
   '/components': typeof ComponentsRoute
+  '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
 }
 export interface FileRoutesByTo {
@@ -74,9 +88,11 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/analyze': typeof AnalyzeRoute
   '/components': typeof ComponentsRoute
+  '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
 }
 export interface FileRoutesById {
@@ -85,9 +101,11 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/analyze': typeof AnalyzeRoute
   '/components': typeof ComponentsRoute
+  '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
 }
 export interface FileRouteTypes {
@@ -97,9 +115,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/analyze'
     | '/components'
+    | '/connect'
     | '/enter'
     | '/guide'
     | '/profile'
+    | '/referrals'
     | '/riya'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -107,9 +127,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/analyze'
     | '/components'
+    | '/connect'
     | '/enter'
     | '/guide'
     | '/profile'
+    | '/referrals'
     | '/riya'
   id:
     | '__root__'
@@ -117,9 +139,11 @@ export interface FileRouteTypes {
     | '/about'
     | '/analyze'
     | '/components'
+    | '/connect'
     | '/enter'
     | '/guide'
     | '/profile'
+    | '/referrals'
     | '/riya'
   fileRoutesById: FileRoutesById
 }
@@ -128,9 +152,11 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AnalyzeRoute: typeof AnalyzeRoute
   ComponentsRoute: typeof ComponentsRoute
+  ConnectRoute: typeof ConnectRoute
   EnterRoute: typeof EnterRoute
   GuideRoute: typeof GuideRoute
   ProfileRoute: typeof ProfileRoute
+  ReferralsRoute: typeof ReferralsRoute
   RiyaRoute: typeof RiyaRoute
 }
 
@@ -164,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/connect': {
+      id: '/connect'
+      path: '/connect'
+      fullPath: '/connect'
+      preLoaderRoute: typeof ConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/enter': {
       id: '/enter'
       path: '/enter'
@@ -185,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/referrals': {
+      id: '/referrals'
+      path: '/referrals'
+      fullPath: '/referrals'
+      preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/riya': {
       id: '/riya'
       path: '/riya'
@@ -200,9 +240,11 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AnalyzeRoute: AnalyzeRoute,
   ComponentsRoute: ComponentsRoute,
+  ConnectRoute: ConnectRoute,
   EnterRoute: EnterRoute,
   GuideRoute: GuideRoute,
   ProfileRoute: ProfileRoute,
+  ReferralsRoute: ReferralsRoute,
   RiyaRoute: RiyaRoute,
 }
 export const routeTree = rootRouteImport
