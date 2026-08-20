@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { GraduationCap, Mail, MapPin } from "lucide-react";
 
-import ownerPhoto from "@/assets/owner-profile.jpg";
+import ownerPhotoAsset from "@/assets/owner-profile.jpg.asset.json";
 import { PageShell } from "@/components/site-shell";
 
 export const Route = createFileRoute("/about")({
@@ -31,7 +31,7 @@ function AboutPage() {
       <article className="glass card-hover overflow-hidden p-6 sm:p-8">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
           <img
-            src={ownerPhoto}
+            src={ownerPhotoAsset.url}
             alt="Portrait of Riyas U, founder of RiyasTech Hub"
             loading="lazy"
             className="h-40 w-40 shrink-0 rounded-2xl border border-primary/40 object-cover glow-ring"
