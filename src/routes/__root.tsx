@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
+import { RiyaDock } from "@/components/riya-dock";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -142,6 +143,7 @@ function RootComponent() {
         </div>
         <SiteFooter />
       </div>
+      <RiyaDock />
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
