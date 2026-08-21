@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ExternalLink, PackageSearch } from "lucide-react";
+import { ChevronDown, ExternalLink, PackageSearch } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { PageShell } from "@/components/site-shell";
