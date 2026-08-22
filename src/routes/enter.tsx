@@ -174,7 +174,13 @@ function EnterPage() {
             onClick={() => sendMutation.mutate()}
           >
             {sendMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {otpSent ? "Resend OTP" : "Send OTP"}
+            {otpSent
+              ? cooldown > 0
+                ? `Resend OTP in ${cooldown}s`
+                : "Resend OTP"
+              : cooldown > 0
+                ? `Send OTP in ${cooldown}s`
+                : "Send OTP"}
           </Button>
 
           {otpSent ? (
