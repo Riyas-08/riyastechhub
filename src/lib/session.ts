@@ -80,3 +80,19 @@ export function useHydrated() {
   useEffect(() => setHydrated(true), []);
   return hydrated;
 }
+/* ---------- College + premium access ---------- */
+
+const COLLEGE_KEY = "riyastech.college";
+const PREMIUM_KEY = "riyastech.premium";
+
+export type Premium = { analysis: boolean; viva: boolean };
+
+export const setCollege = (name: string | null) => write(COLLEGE_KEY, name);
+export const useCollege = () => useStored<string>(COLLEGE_KEY);
+
+export const setPremium = (p: Premium) => write(PREMIUM_KEY, p);
+export const usePremium = (): Premium =>
+  useStored<Premium>(PREMIUM_KEY) ?? { analysis: false, viva: false };
+
+export const isSeniorYear = (year: string | null | undefined) =>
+  !!year && (year.startsWith("3rd") || year.startsWith("4th"));
