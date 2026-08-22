@@ -51,15 +51,28 @@ function EnterPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [verified, setVerified] = useState(false);
 
-  const mobileValid = /^[6-9]\d{9}$/.test(mobile);
-  const canSend = username.trim().length >= 2 && mobileValid && district !== "";
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const mobileValid = /^[6-9]\d{9}$/.test(mobile) && mobile.length === 10;
+  const canSend =
+    username.trim().length >= 2 && mobileValid && district !== "" && cooldown === 0;
 
   const sendMutation = useMutation({
-    mutationFn: () => send({ data: { mobile } }),
+    mutationFn: () => {
+      if (!mobileValid) throw new Error("Enter exactly 10 digits.");
+      return send({ data: { mobile } });
+    },
     onSuccess: (res) => {
       setOtpSent(true);
       setVerified(false);
       setCode("");
+      setCooldown(40);
       toast.success(`OTP sent to +91 ${mobile}`, {
         description: `No SMS gateway is connected yet, so your verification code is: ${res.code}`,
         duration: 15000,
