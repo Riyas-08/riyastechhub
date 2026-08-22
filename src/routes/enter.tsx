@@ -135,6 +135,7 @@ function EnterPage() {
                 inputMode="numeric"
                 value={mobile}
                 placeholder="10-digit number"
+                maxLength={10}
                 onChange={(e) => {
                   setMobile(e.target.value.replace(/\D/g, "").slice(0, 10));
                   setOtpSent(false);
@@ -143,8 +144,12 @@ function EnterPage() {
               />
             </div>
             {mobile && !mobileValid ? (
-              <p className="text-xs text-destructive">Enter a valid Indian mobile number.</p>
-            ) : null}
+              <p className="text-xs text-destructive">
+                Enter exactly 10 digits starting with 6, 7, 8 or 9.
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">{mobile.length}/10 digits</p>
+            )}
           </div>
 
           <div className="grid gap-2">
