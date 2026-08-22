@@ -16,6 +16,7 @@ import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as EnterRouteImport } from './routes/enter'
 import { Route as GuideRouteImport } from './routes/guide'
+import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as RiyaRouteImport } from './routes/riya'
@@ -55,6 +56,11 @@ const GuideRoute = GuideRouteImport.update({
   path: '/guide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/premium'
     | '/profile'
     | '/referrals'
     | '/riya'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/premium'
     | '/profile'
     | '/referrals'
     | '/riya'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/premium'
     | '/profile'
     | '/referrals'
     | '/riya'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   ConnectRoute: typeof ConnectRoute
   EnterRoute: typeof EnterRoute
   GuideRoute: typeof GuideRoute
+  PremiumRoute: typeof PremiumRoute
   ProfileRoute: typeof ProfileRoute
   ReferralsRoute: typeof ReferralsRoute
   RiyaRoute: typeof RiyaRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConnectRoute: ConnectRoute,
   EnterRoute: EnterRoute,
   GuideRoute: GuideRoute,
+  PremiumRoute: PremiumRoute,
   ProfileRoute: ProfileRoute,
   ReferralsRoute: ReferralsRoute,
   RiyaRoute: RiyaRoute,
