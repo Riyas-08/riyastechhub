@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -51,15 +51,28 @@ function EnterPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [verified, setVerified] = useState(false);
 
-  const mobileValid = /^[6-9]\d{9}$/.test(mobile);
-  const canSend = username.trim().length >= 2 && mobileValid && district !== "";
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const mobileValid = /^[6-9]\d{9}$/.test(mobile) && mobile.length === 10;
+  const canSend =
+    username.trim().length >= 2 && mobileValid && district !== "" && cooldown === 0;
 
   const sendMutation = useMutation({
-    mutationFn: () => send({ data: { mobile } }),
+    mutationFn: () => {
+      if (!mobileValid) throw new Error("Enter exactly 10 digits.");
+      return send({ data: { mobile } });
+    },
     onSuccess: (res) => {
       setOtpSent(true);
       setVerified(false);
       setCode("");
+      setCooldown(40);
       toast.success(`OTP sent to +91 ${mobile}`, {
         description: `No SMS gateway is connected yet, so your verification code is: ${res.code}`,
         duration: 15000,
@@ -122,6 +135,7 @@ function EnterPage() {
                 inputMode="numeric"
                 value={mobile}
                 placeholder="10-digit number"
+                maxLength={10}
                 onChange={(e) => {
                   setMobile(e.target.value.replace(/\D/g, "").slice(0, 10));
                   setOtpSent(false);
@@ -130,8 +144,12 @@ function EnterPage() {
               />
             </div>
             {mobile && !mobileValid ? (
-              <p className="text-xs text-destructive">Enter a valid Indian mobile number.</p>
-            ) : null}
+              <p className="text-xs text-destructive">
+                Enter exactly 10 digits starting with 6, 7, 8 or 9.
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">{mobile.length}/10 digits</p>
+            )}
           </div>
 
           <div className="grid gap-2">
@@ -156,7 +174,13 @@ function EnterPage() {
             onClick={() => sendMutation.mutate()}
           >
             {sendMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {otpSent ? "Resend OTP" : "Send OTP"}
+            {otpSent
+              ? cooldown > 0
+                ? `Resend OTP in ${cooldown}s`
+                : "Resend OTP"
+              : cooldown > 0
+                ? `Send OTP in ${cooldown}s`
+                : "Send OTP"}
           </Button>
 
           {otpSent ? (

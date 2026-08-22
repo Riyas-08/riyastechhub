@@ -143,3 +143,35 @@ You specialise in electronic components, circuit design, PCB layout, microcontro
     false,
   );
 }
+export async function identifyComponentImage(imageDataUrl: string, note: string) {
+  const apiKey = process.env["LOVABLE_API_KEY"];
+  if (!apiKey) throw new Error("AI is not configured yet.");
+
+  const res = await fetch(GATEWAY, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: MODEL,
+      messages: [
+        {
+          role: "system",
+          content: `You are Riya AI, a hardware component identification expert. ${LANG_RULE}
+Identify the electronic component in the photo. Reply in markdown with: **Component name** (exact part number if visible), category, key specifications, pin/terminal details, typical circuit use, and an approximate Indian retail price in rupees. If unclear, list the 2-3 most likely candidates and say what marking to check.`,
+        },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: note || "Identify this component." },
+            { type: "image_url", image_url: { url: imageDataUrl } },
+          ],
+        },
+      ],
+    }),
+  });
+
+  if (res.status === 429) throw new Error("Rate limit reached. Please retry in a moment.");
+  if (res.status === 402) throw new Error("AI credits exhausted for this workspace.");
+  if (!res.ok) throw new Error(`AI request failed (${res.status})`);
+  const json = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+  return json.choices?.[0]?.message?.content ?? "Could not identify the component.";
+}
