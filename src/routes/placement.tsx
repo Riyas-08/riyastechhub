@@ -472,6 +472,7 @@ function PlacementPage() {
 
   const categories = useMemo(() => COMPANIES[branch], [branch]);
   const readiness = Math.round((checked.filter(Boolean).length / CHECKLIST_ITEMS.length) * 100);
+  const activeCareer = CAREER_PATHS[activePath] ?? CAREER_PATHS[0]!;
 
   return (
     <>
@@ -682,9 +683,9 @@ function PlacementPage() {
               <span className="py-1 text-primary sm:hidden"><ArrowDown className="h-4 w-4" /></span>
               <span className="hidden text-primary sm:block"><ChevronRight className="h-4 w-4" /></span>
               <span className="rounded-xl border border-secondary/60 bg-secondary/10 px-4 py-2 font-display text-xs font-bold text-secondary-foreground sm:text-sm">
-                {CAREER_PATHS[activePath].domain}
+                {activeCareer.domain}
               </span>
-              {CAREER_PATHS[activePath].steps.map((step) => (
+              {activeCareer.steps.map((step) => (
                 <span key={step} className="contents">
                   <span className="py-1 text-primary sm:hidden"><ArrowDown className="h-4 w-4" /></span>
                   <span className="hidden text-primary sm:block"><ChevronRight className="h-4 w-4" /></span>

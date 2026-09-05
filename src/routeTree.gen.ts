@@ -16,6 +16,7 @@ import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as EnterRouteImport } from './routes/enter'
 import { Route as GuideRouteImport } from './routes/guide'
+import { Route as PlacementRouteImport } from './routes/placement'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferralsRouteImport } from './routes/referrals'
@@ -56,6 +57,11 @@ const GuideRoute = GuideRouteImport.update({
   path: '/guide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlacementRoute = PlacementRouteImport.update({
+  id: '/placement',
+  path: '/placement',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PremiumRoute = PremiumRouteImport.update({
   id: '/premium',
   path: '/premium',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/placement'
     | '/premium'
     | '/profile'
     | '/referrals'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/placement'
     | '/premium'
     | '/profile'
     | '/referrals'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/placement'
     | '/premium'
     | '/profile'
     | '/referrals'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   ConnectRoute: typeof ConnectRoute
   EnterRoute: typeof EnterRoute
   GuideRoute: typeof GuideRoute
+  PlacementRoute: typeof PlacementRoute
   PremiumRoute: typeof PremiumRoute
   ProfileRoute: typeof ProfileRoute
   ReferralsRoute: typeof ReferralsRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/placement': {
+      id: '/placement'
+      path: '/placement'
+      fullPath: '/placement'
+      preLoaderRoute: typeof PlacementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/premium': {
       id: '/premium'
       path: '/premium'
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConnectRoute: ConnectRoute,
   EnterRoute: EnterRoute,
   GuideRoute: GuideRoute,
+  PlacementRoute: PlacementRoute,
   PremiumRoute: PremiumRoute,
   ProfileRoute: ProfileRoute,
   ReferralsRoute: ReferralsRoute,
