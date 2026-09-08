@@ -310,7 +310,7 @@ const SKILL_CATEGORIES: { title: string; skills: string[] }[] = [
   },
   {
     title: "Software Tools",
-    skills: ["MATLAB", "Simulink", "Proteus", "AutoCAD", "SolidWorks", "Keil"],
+    skills: ["MATLAB", "Simulink", "Proteus", "AutoCAD", "SolidWorks", "ANSYS", "Revit", "Keil"],
   },
   {
     title: "Advanced Technologies",
@@ -331,11 +331,17 @@ const ROADMAP = [
     learn: [
       "C Programming Basics",
       "Python Basics",
+      "MATLAB Fundamentals",
       "Engineering Drawing",
       "Basic Electronics",
       "Basic Electrical Concepts",
     ],
     activities: ["Join Technical Clubs", "Attend Workshops", "Participate in Competitions", "Build Simple Projects"],
+    projects: [
+      "Breadboard power supply & basic circuits",
+      "Line follower robot (club project)",
+      "CAD model of a simple mechanical part",
+    ],
     goal: "Build Strong Fundamentals",
   },
   {
@@ -344,12 +350,17 @@ const ROADMAP = [
     focus: ["Choose a preferred Core Domain", "Learn industry software", "Start technical projects"],
     learn: [
       "Core Subject Fundamentals",
-      "Microcontrollers / Domain Tools",
-      "MATLAB",
-      "Proteus",
-      "AutoCAD / SolidWorks (branch-wise)",
+      "Embedded C & Microcontrollers",
+      "MATLAB & Simulink",
+      "AutoCAD / Proteus (branch-wise)",
+      "Data Interpretation Basics",
     ],
     activities: ["Complete Certifications", "Build Mini Projects", "Participate in Hackathons", "Create LinkedIn Profile"],
+    projects: [
+      "IoT sensor monitoring node (ESP32)",
+      "Two-layer PCB designed in Proteus/KiCad",
+      "Structural or machine component draft in AutoCAD",
+    ],
     goal: "Discover Your Specialization",
   },
   {
@@ -359,13 +370,23 @@ const ROADMAP = [
       "Select a specific career domain — Embedded Systems, VLSI, Robotics, Automation, Electric Vehicles, Manufacturing or Structural Engineering",
       "Learn advanced skills based on the selected specialization",
     ],
-    learn: ["Advanced domain tools & frameworks", "Industry standards", "Version control (Git)", "Documentation"],
+    learn: [
+      "Advanced domain tools — ANSYS, Revit, ETAP, Verilog, PLC/SCADA (branch-wise)",
+      "Industry standards & codes",
+      "Version control (Git)",
+      "Technical Documentation",
+    ],
     activities: [
       "Build Advanced Projects",
       "Apply for Internships",
       "Create Technical Portfolio",
       "Upload Projects to GitHub",
       "Participate in Industry Events",
+    ],
+    projects: [
+      "Flagship domain project — BLDC controller, STAAD Pro building model, PLC automation cell or RTL IP block",
+      "Internship project with documented outcomes",
+      "GitHub portfolio with 3+ well-documented repos",
     ],
     goal: "Become Industry Ready",
   },
@@ -387,6 +408,11 @@ const ROADMAP = [
       "Internship Experience",
       "LinkedIn Profile Updated",
       "Technical Skills Verified",
+    ],
+    projects: [
+      "Capstone project with clear industry relevance",
+      "Published project report or paper",
+      "Polished technical resume & project portfolio",
     ],
     goal: "Get Placed in Your Dream Core Company",
   },
