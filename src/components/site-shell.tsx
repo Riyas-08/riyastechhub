@@ -14,6 +14,7 @@ const NAV = [
   { to: "/referrals", label: "Refer & Earn" },
   { to: "/guide", label: "Guide & Viva" },
   { to: "/placement", label: "Placement" },
+  { to: "/companies", label: "Companies" },
   { to: "/riya", label: "Riya AI" },
   { to: "/about", label: "Owner" },
   { to: "/connect", label: "Learn & Contact" },

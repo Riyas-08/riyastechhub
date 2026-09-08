@@ -298,6 +298,72 @@ const COMPANIES: Record<BranchId, CompanyCategory[]> = {
   ],
 };
 
+const TIER_MAP: Record<string, string> = {
+  "Semiconductor & VLSI": "Tier 1 · Global MNC",
+  "Embedded & Electronics": "Tier 1 · Global MNC",
+  "Automation & Industrial": "Tier 1 · Global MNC",
+  "Communication & Networks": "Tier 2 · National Leader",
+  "Power & Energy": "Tier 1 · Global & PSU",
+  "Automation & Drives": "Tier 1 · Global MNC",
+  "Electric Vehicles": "Tier 2 · National Leader",
+  Renewables: "Tier 2 · National Leader",
+  "Automotive & Manufacturing": "Tier 2 · National Leader",
+  "Core Engineering Services": "Tier 1 · Global MNC",
+  "Heavy Machinery & Energy": "Tier 1 · Global & PSU",
+  "HVAC & Product Design": "Tier 2 · National Leader",
+  "Construction & Infrastructure": "Tier 2 · National Leader",
+  "Design & Consulting": "Tier 1 · Global MNC",
+  "PSUs & Government": "Tier 3 · PSU & Govt",
+  "Industrial Robotics": "Tier 1 · Global MNC",
+  "Automation & Controls": "Tier 1 · Global MNC",
+  "AI & Mobile Robotics": "Tier 3 · Emerging",
+  "Automation & Manufacturing": "Tier 1 · Global MNC",
+  "Automotive Electronics": "Tier 1 · Global MNC",
+  "Product & IoT": "Tier 2 · National Leader",
+  OEMs: "Tier 2 · National Leader",
+  "EV & Mobility": "Tier 3 · Emerging",
+  "Component & Tier-1": "Tier 2 · National Leader",
+  "Process & Industrial": "Tier 1 · Global MNC",
+  "Oil, Gas & Energy": "Tier 2 · National Leader",
+  "Automation Solutions": "Tier 1 · Global MNC",
+  "Medical Devices": "Tier 1 · Global MNC",
+  "Imaging & Diagnostics": "Tier 2 · National Leader",
+  "Healthcare IT & Robotics": "Tier 2 · National Leader",
+  "Aerospace & Defence": "Tier 3 · PSU & Govt",
+  "Global Aerospace": "Tier 1 · Global MNC",
+  "Space Tech": "Tier 3 · Emerging",
+};
+
+const INTERVIEW_PREP: { title: string; items: string[] }[] = [
+  {
+    title: "Core Technical Subjects",
+    items: [
+      "Revise 3–4 branch core subjects in depth",
+      "Practice GATE-level problem solving",
+      "Master domain topics — VLSI, machines, SOM, structures",
+      "Be able to explain every project on your resume",
+    ],
+  },
+  {
+    title: "Problem Solving & Tests",
+    items: [
+      "Aptitude — quantitative, logical and verbal",
+      "Technical MCQs from core subjects",
+      "Basic coding round in C or Python",
+      "Solve company-specific previous papers",
+    ],
+  },
+  {
+    title: "HR & Soft Skills",
+    items: [
+      "Prepare a crisp 90-second self-introduction",
+      "Answer 'why core engineering, why this company'",
+      "Show willingness for site or location flexibility",
+      "Explain projects clearly with diagrams and results",
+    ],
+  },
+];
+
 const SKILL_CATEGORIES: { title: string; skills: string[] }[] = [
   {
     title: "Technical Fundamentals",
@@ -310,7 +376,7 @@ const SKILL_CATEGORIES: { title: string; skills: string[] }[] = [
   },
   {
     title: "Software Tools",
-    skills: ["MATLAB", "Simulink", "Proteus", "AutoCAD", "SolidWorks", "Keil"],
+    skills: ["MATLAB", "Simulink", "Proteus", "AutoCAD", "SolidWorks", "ANSYS", "Revit", "Keil"],
   },
   {
     title: "Advanced Technologies",
@@ -331,11 +397,17 @@ const ROADMAP = [
     learn: [
       "C Programming Basics",
       "Python Basics",
+      "MATLAB Fundamentals",
       "Engineering Drawing",
       "Basic Electronics",
       "Basic Electrical Concepts",
     ],
     activities: ["Join Technical Clubs", "Attend Workshops", "Participate in Competitions", "Build Simple Projects"],
+    projects: [
+      "Breadboard power supply & basic circuits",
+      "Line follower robot (club project)",
+      "CAD model of a simple mechanical part",
+    ],
     goal: "Build Strong Fundamentals",
   },
   {
@@ -344,12 +416,17 @@ const ROADMAP = [
     focus: ["Choose a preferred Core Domain", "Learn industry software", "Start technical projects"],
     learn: [
       "Core Subject Fundamentals",
-      "Microcontrollers / Domain Tools",
-      "MATLAB",
-      "Proteus",
-      "AutoCAD / SolidWorks (branch-wise)",
+      "Embedded C & Microcontrollers",
+      "MATLAB & Simulink",
+      "AutoCAD / Proteus (branch-wise)",
+      "Data Interpretation Basics",
     ],
     activities: ["Complete Certifications", "Build Mini Projects", "Participate in Hackathons", "Create LinkedIn Profile"],
+    projects: [
+      "IoT sensor monitoring node (ESP32)",
+      "Two-layer PCB designed in Proteus/KiCad",
+      "Structural or machine component draft in AutoCAD",
+    ],
     goal: "Discover Your Specialization",
   },
   {
@@ -359,13 +436,23 @@ const ROADMAP = [
       "Select a specific career domain — Embedded Systems, VLSI, Robotics, Automation, Electric Vehicles, Manufacturing or Structural Engineering",
       "Learn advanced skills based on the selected specialization",
     ],
-    learn: ["Advanced domain tools & frameworks", "Industry standards", "Version control (Git)", "Documentation"],
+    learn: [
+      "Advanced domain tools — ANSYS, Revit, ETAP, Verilog, PLC/SCADA (branch-wise)",
+      "Industry standards & codes",
+      "Version control (Git)",
+      "Technical Documentation",
+    ],
     activities: [
       "Build Advanced Projects",
       "Apply for Internships",
       "Create Technical Portfolio",
       "Upload Projects to GitHub",
       "Participate in Industry Events",
+    ],
+    projects: [
+      "Flagship domain project — BLDC controller, STAAD Pro building model, PLC automation cell or RTL IP block",
+      "Internship project with documented outcomes",
+      "GitHub portfolio with 3+ well-documented repos",
     ],
     goal: "Become Industry Ready",
   },
@@ -387,6 +474,11 @@ const ROADMAP = [
       "Internship Experience",
       "LinkedIn Profile Updated",
       "Technical Skills Verified",
+    ],
+    projects: [
+      "Capstone project with clear industry relevance",
+      "Published project report or paper",
+      "Polished technical resume & project portfolio",
     ],
     goal: "Get Placed in Your Dream Core Company",
   },
@@ -528,18 +620,21 @@ function PlacementPage() {
 
         {/* ------------------------ SECTION 2: COMPANIES ---------------------- */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">Top Core Industries &amp; Career Opportunities</h2>
+          <h2 className="font-display text-2xl font-bold sm:text-3xl">Top Core Companies Tier List</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Companies hiring {BRANCHES.find((b) => b.id === branch)?.name} students, grouped by industry category.
+            Major multinational and national core companies hiring {BRANCHES.find((b) => b.id === branch)?.name} students, grouped by industry category and tier.
           </p>
           <div className="mt-6 grid gap-5 md:grid-cols-2">
             {categories.map((cat, i) => (
               <article key={cat.category} className="glass card-hover p-6">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 place-items-center rounded-xl border border-primary/40 bg-primary/10 text-primary">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-primary/40 bg-primary/10 text-primary">
                     <Building2 className="h-5 w-5" />
                   </span>
                   <h3 className="font-display text-lg font-bold">{cat.category}</h3>
+                  <span className="ml-auto shrink-0 rounded-md border border-primary/40 bg-primary/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {TIER_MAP[cat.category] ?? "Core"}
+                  </span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {cat.companies.map((c) => (
@@ -646,6 +741,18 @@ function PlacementPage() {
                       </ul>
                     </div>
                   </div>
+                  <div className="mt-6">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+                      Project &amp; Portfolio Milestones
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {stage.projects.map((p) => (
+                        <span key={p} className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium">
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   <p className="mt-6 inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
                     <Target className="h-3.5 w-3.5" /> Goal: "{stage.goal}"
                   </p>
@@ -729,7 +836,30 @@ function PlacementPage() {
           </div>
         </section>
 
-        {/* ----------------------- SECTION 7: CHECKLIST ----------------------- */}
+        {/* ------------------- SECTION 7: INTERVIEW STRATEGY ------------------ */}
+        <section className="mt-14">
+          <h2 className="font-display text-2xl font-bold sm:text-3xl">Interview Preparation Strategy</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            What core-sector recruiters test — technical depth, problem solving and HR expectations.
+          </p>
+          <div className="mt-6 grid gap-5 md:grid-cols-3">
+            {INTERVIEW_PREP.map((block) => (
+              <article key={block.title} className="glass card-hover p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{block.title}</p>
+                <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                  {block.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ----------------------- SECTION 8: CHECKLIST ----------------------- */}
         <section className="mt-14 mb-4">
           <div className="glass p-6 sm:p-10">
             <h2 className="font-display text-2xl font-bold sm:text-3xl">Are You Placement Ready?</h2>
