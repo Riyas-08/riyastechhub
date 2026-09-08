@@ -298,6 +298,72 @@ const COMPANIES: Record<BranchId, CompanyCategory[]> = {
   ],
 };
 
+const TIER_MAP: Record<string, string> = {
+  "Semiconductor & VLSI": "Tier 1 · Global MNC",
+  "Embedded & Electronics": "Tier 1 · Global MNC",
+  "Automation & Industrial": "Tier 1 · Global MNC",
+  "Communication & Networks": "Tier 2 · National Leader",
+  "Power & Energy": "Tier 1 · Global & PSU",
+  "Automation & Drives": "Tier 1 · Global MNC",
+  "Electric Vehicles": "Tier 2 · National Leader",
+  Renewables: "Tier 2 · National Leader",
+  "Automotive & Manufacturing": "Tier 2 · National Leader",
+  "Core Engineering Services": "Tier 1 · Global MNC",
+  "Heavy Machinery & Energy": "Tier 1 · Global & PSU",
+  "HVAC & Product Design": "Tier 2 · National Leader",
+  "Construction & Infrastructure": "Tier 2 · National Leader",
+  "Design & Consulting": "Tier 1 · Global MNC",
+  "PSUs & Government": "Tier 3 · PSU & Govt",
+  "Industrial Robotics": "Tier 1 · Global MNC",
+  "Automation & Controls": "Tier 1 · Global MNC",
+  "AI & Mobile Robotics": "Tier 3 · Emerging",
+  "Automation & Manufacturing": "Tier 1 · Global MNC",
+  "Automotive Electronics": "Tier 1 · Global MNC",
+  "Product & IoT": "Tier 2 · National Leader",
+  OEMs: "Tier 2 · National Leader",
+  "EV & Mobility": "Tier 3 · Emerging",
+  "Component & Tier-1": "Tier 2 · National Leader",
+  "Process & Industrial": "Tier 1 · Global MNC",
+  "Oil, Gas & Energy": "Tier 2 · National Leader",
+  "Automation Solutions": "Tier 1 · Global MNC",
+  "Medical Devices": "Tier 1 · Global MNC",
+  "Imaging & Diagnostics": "Tier 2 · National Leader",
+  "Healthcare IT & Robotics": "Tier 2 · National Leader",
+  "Aerospace & Defence": "Tier 3 · PSU & Govt",
+  "Global Aerospace": "Tier 1 · Global MNC",
+  "Space Tech": "Tier 3 · Emerging",
+};
+
+const INTERVIEW_PREP: { title: string; items: string[] }[] = [
+  {
+    title: "Core Technical Subjects",
+    items: [
+      "Revise 3–4 branch core subjects in depth",
+      "Practice GATE-level problem solving",
+      "Master domain topics — VLSI, machines, SOM, structures",
+      "Be able to explain every project on your resume",
+    ],
+  },
+  {
+    title: "Problem Solving & Tests",
+    items: [
+      "Aptitude — quantitative, logical and verbal",
+      "Technical MCQs from core subjects",
+      "Basic coding round in C or Python",
+      "Solve company-specific previous papers",
+    ],
+  },
+  {
+    title: "HR & Soft Skills",
+    items: [
+      "Prepare a crisp 90-second self-introduction",
+      "Answer 'why core engineering, why this company'",
+      "Show willingness for site or location flexibility",
+      "Explain projects clearly with diagrams and results",
+    ],
+  },
+];
+
 const SKILL_CATEGORIES: { title: string; skills: string[] }[] = [
   {
     title: "Technical Fundamentals",
@@ -554,9 +620,9 @@ function PlacementPage() {
 
         {/* ------------------------ SECTION 2: COMPANIES ---------------------- */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold sm:text-3xl">Top Core Industries &amp; Career Opportunities</h2>
+          <h2 className="font-display text-2xl font-bold sm:text-3xl">Top Core Companies Tier List</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Companies hiring {BRANCHES.find((b) => b.id === branch)?.name} students, grouped by industry category.
+            Major multinational and national core companies hiring {BRANCHES.find((b) => b.id === branch)?.name} students, grouped by industry category and tier.
           </p>
           <div className="mt-6 grid gap-5 md:grid-cols-2">
             {categories.map((cat, i) => (
