@@ -628,10 +628,13 @@ function PlacementPage() {
             {categories.map((cat, i) => (
               <article key={cat.category} className="glass card-hover p-6">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 place-items-center rounded-xl border border-primary/40 bg-primary/10 text-primary">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-primary/40 bg-primary/10 text-primary">
                     <Building2 className="h-5 w-5" />
                   </span>
                   <h3 className="font-display text-lg font-bold">{cat.category}</h3>
+                  <span className="ml-auto shrink-0 rounded-md border border-primary/40 bg-primary/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {TIER_MAP[cat.category] ?? "Core"}
+                  </span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {cat.companies.map((c) => (
@@ -738,6 +741,18 @@ function PlacementPage() {
                       </ul>
                     </div>
                   </div>
+                  <div className="mt-6">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+                      Project &amp; Portfolio Milestones
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {stage.projects.map((p) => (
+                        <span key={p} className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium">
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   <p className="mt-6 inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
                     <Target className="h-3.5 w-3.5" /> Goal: "{stage.goal}"
                   </p>
@@ -821,7 +836,30 @@ function PlacementPage() {
           </div>
         </section>
 
-        {/* ----------------------- SECTION 7: CHECKLIST ----------------------- */}
+        {/* ------------------- SECTION 7: INTERVIEW STRATEGY ------------------ */}
+        <section className="mt-14">
+          <h2 className="font-display text-2xl font-bold sm:text-3xl">Interview Preparation Strategy</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            What core-sector recruiters test — technical depth, problem solving and HR expectations.
+          </p>
+          <div className="mt-6 grid gap-5 md:grid-cols-3">
+            {INTERVIEW_PREP.map((block) => (
+              <article key={block.title} className="glass card-hover p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{block.title}</p>
+                <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                  {block.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ----------------------- SECTION 8: CHECKLIST ----------------------- */}
         <section className="mt-14 mb-4">
           <div className="glass p-6 sm:p-10">
             <h2 className="font-display text-2xl font-bold sm:text-3xl">Are You Placement Ready?</h2>
