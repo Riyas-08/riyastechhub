@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
+import { Route as CodingRouteImport } from './routes/coding'
 import { Route as CompaniesRouteImport } from './routes/companies'
 import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as ConnectRouteImport } from './routes/connect'
@@ -36,6 +37,11 @@ const AboutRoute = AboutRouteImport.update({
 const AnalyzeRoute = AnalyzeRouteImport.update({
   id: '/analyze',
   path: '/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CodingRoute = CodingRouteImport.update({
+  id: '/coding',
+  path: '/coding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompaniesRoute = CompaniesRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/analyze': typeof AnalyzeRoute
+  '/coding': typeof CodingRoute
   '/companies': typeof CompaniesRoute
   '/components': typeof ComponentsRoute
   '/connect': typeof ConnectRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/analyze': typeof AnalyzeRoute
+  '/coding': typeof CodingRoute
   '/companies': typeof CompaniesRoute
   '/components': typeof ComponentsRoute
   '/connect': typeof ConnectRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/analyze': typeof AnalyzeRoute
+  '/coding': typeof CodingRoute
   '/companies': typeof CompaniesRoute
   '/components': typeof ComponentsRoute
   '/connect': typeof ConnectRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/analyze'
+    | '/coding'
     | '/companies'
     | '/components'
     | '/connect'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/analyze'
+    | '/coding'
     | '/companies'
     | '/components'
     | '/connect'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/analyze'
+    | '/coding'
     | '/companies'
     | '/components'
     | '/connect'
@@ -187,6 +199,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AnalyzeRoute: typeof AnalyzeRoute
+  CodingRoute: typeof CodingRoute
   CompaniesRoute: typeof CompaniesRoute
   ComponentsRoute: typeof ComponentsRoute
   ConnectRoute: typeof ConnectRoute
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/analyze'
       fullPath: '/analyze'
       preLoaderRoute: typeof AnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coding': {
+      id: '/coding'
+      path: '/coding'
+      fullPath: '/coding'
+      preLoaderRoute: typeof CodingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/companies': {
@@ -299,6 +319,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AnalyzeRoute: AnalyzeRoute,
+  CodingRoute: CodingRoute,
   CompaniesRoute: CompaniesRoute,
   ComponentsRoute: ComponentsRoute,
   ConnectRoute: ConnectRoute,
