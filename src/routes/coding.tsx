@@ -367,7 +367,7 @@ function runC(code: string, cpp: boolean): RunResult {
 
   const bodyLines = code.split("\n");
   bodyLines.forEach((raw, i) => {
-    const line = raw.split("//")[0].trim();
+    const line = (raw.split("//")[0] ?? "").trim();
     if (!line || line.startsWith("#") || line.startsWith("/*") || line.startsWith("*")) return;
     if (/[{}]$/.test(line) || line.endsWith(";") || line.endsWith(":") || line.startsWith("}")) return;
     if (/^(if|for|while|else|switch|do|class|struct|public:|private:)/.test(line)) return;
@@ -394,8 +394,8 @@ function runC(code: string, cpp: boolean): RunResult {
   const declRe = /\b(?:int|long|float|double)\s+([A-Za-z_]\w*)\s*=\s*([^;,]+)/g;
   let d: RegExpExecArray | null;
   while ((d = declRe.exec(code))) {
-    const v = evalNumeric(d[2], vars);
-    if (v !== null) vars[d[1]] = v;
+    const v = evalNumeric(d[2] ?? "", vars);
+    if (v !== null) vars[d[1] ?? "_"] = v;
   }
 
   const out: string[] = [];
@@ -405,12 +405,13 @@ function runC(code: string, cpp: boolean): RunResult {
     /for\s*\(\s*(?:int\s+)?([A-Za-z_]\w*)\s*=\s*([^;]+);\s*\1\s*(<=|<)\s*([^;]+);[^)]*\)\s*\{?\s*([A-Za-z_]\w*)\s*\+=\s*\1\s*;/g;
   let l: RegExpExecArray | null;
   while ((l = loopRe.exec(code))) {
-    const from = evalNumeric(l[2], vars);
-    const to = evalNumeric(l[4], vars);
+    const from = evalNumeric(l[2] ?? "", vars);
+    const to = evalNumeric(l[4] ?? "", vars);
+    const target = l[5] ?? "_";
     if (from === null || to === null) continue;
-    let acc = vars[l[5]] ?? 0;
+    let acc = vars[target] ?? 0;
     for (let i = from; l[3] === "<=" ? i <= to : i < to; i++) acc += i;
-    vars[l[5]] = acc;
+    vars[target] = acc;
   }
 
   if (cpp) {
@@ -418,7 +419,7 @@ function runC(code: string, cpp: boolean): RunResult {
     let m: RegExpExecArray | null;
     while ((m = coutRe.exec(code))) {
       let text = "";
-      for (const part of m[1].split("<<").map((p) => p.trim()).filter(Boolean)) {
+      for (const part of (m[1] ?? "").split("<<").map((p) => p.trim()).filter(Boolean)) {
         if (/^endl$/.test(part)) text += "\n";
         else if (/^"(.*)"$/s.test(part)) text += unescape(part.slice(1, -1));
         else {
@@ -432,8 +433,8 @@ function runC(code: string, cpp: boolean): RunResult {
     const pfRe = /printf\s*\(\s*"([^"]*)"\s*((?:,[^;]+)?)\)\s*;/g;
     let m: RegExpExecArray | null;
     while ((m = pfRe.exec(code))) {
-      let text = unescape(m[1]);
-      const args = m[2]
+      let text = unescape(m[1] ?? "");
+      const args = (m[2] ?? "")
         .replace(/^,/, "")
         .split(",")
         .map((a) => a.trim())
@@ -470,7 +471,7 @@ function runPython(code: string): RunResult {
   const errors: string[] = [];
 
   lines.forEach((raw, i) => {
-    const line = raw.split("#")[0].trimEnd();
+    const line = (raw.split("#")[0] ?? "").trimEnd();
     if (!line.trim()) return;
     if (/^\s*(if|elif|else|for|while|def|class|try|except|finally|with)\b.*[^:]$/.test(line)) {
       errors.push(`  File "main.py", line ${i + 1}\nSyntaxError: expected ':'`);
