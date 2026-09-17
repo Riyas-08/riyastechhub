@@ -490,17 +490,17 @@ function runPython(code: string): RunResult {
   const out: string[] = [];
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].split("#")[0].trim();
+    const line = (lines[i]?.split("#")[0] ?? "").trim();
     if (!line) continue;
 
     const assign = line.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/);
     if (assign && !line.startsWith("print")) {
-      const rhs = assign[2].trim();
+      const rhs = (assign[2] ?? "").trim();
       const s = rhs.match(/^["'](.*)["']$/);
-      if (s) strVars[assign[1]] = s[1];
+      if (s) strVars[assign[1] ?? ""] = s[1] ?? "";
       else {
         const v = evalNumeric(rhs, vars);
-        if (v !== null) vars[assign[1]] = v;
+        if (v !== null) vars[assign[1] ?? ""] = v;
       }
       continue;
     }
@@ -508,19 +508,19 @@ function runPython(code: string): RunResult {
     // for i in range(a, b): total += i
     const forMatch = line.match(/^for\s+([A-Za-z_]\w*)\s+in\s+range\(([^)]*)\)\s*:$/);
     if (forMatch) {
-      const args = forMatch[2].split(",").map((a) => evalNumeric(a.trim(), vars));
+      const args = (forMatch[2] ?? "").split(",").map((a) => evalNumeric(a.trim(), vars));
       const from = args.length > 1 ? (args[0] ?? 0) : 0;
       const to = args.length > 1 ? (args[1] ?? 0) : (args[0] ?? 0);
       const bodyIdx = i + 1;
       const body = lines[bodyIdx]?.trim() ?? "";
       const acc = body.match(/^([A-Za-z_]\w*)\s*\+=\s*(.+)$/);
       if (acc) {
-        let sum = vars[acc[1]] ?? 0;
+        let sum = vars[acc[1] ?? ""] ?? 0;
         for (let k = from; k < to; k++) {
-          const step = evalNumeric(acc[2], { ...vars, [forMatch[1]]: k });
+          const step = evalNumeric(acc[2] ?? "", { ...vars, [forMatch[1] ?? "i"]: k });
           sum += step ?? 0;
         }
-        vars[acc[1]] = sum;
+        vars[acc[1] ?? ""] = sum;
         i = bodyIdx;
       }
       continue;
@@ -531,7 +531,7 @@ function runPython(code: string): RunResult {
       const parts: string[] = [];
       let depth = 0;
       let current = "";
-      for (const ch of printMatch[1]) {
+      for (const ch of printMatch[1] ?? "") {
         if (ch === "(") depth++;
         if (ch === ")") depth--;
         if (ch === "," && depth === 0) {
@@ -547,16 +547,16 @@ function runPython(code: string): RunResult {
         .map((p) => {
           const f = p.match(/^f["'](.*)["']$/s);
           if (f) {
-            return f[1].replace(/\{([^}]+)\}/g, (_, ex) => {
+            return (f[1] ?? "").replace(/\{([^}]+)\}/g, (_: string, ex: string) => {
               const name = ex.trim();
-              if (name in strVars) return strVars[name];
+              if (name in strVars) return strVars[name] ?? "";
               const v = evalNumeric(name, vars);
               return v !== null ? String(v) : `{${name}}`;
             });
           }
           const s = p.match(/^["'](.*)["']$/s);
-          if (s) return s[1];
-          if (p in strVars) return strVars[p];
+          if (s) return s[1] ?? "";
+          if (p in strVars) return strVars[p] ?? "";
           const v = evalNumeric(p, vars);
           return v !== null ? String(v) : p;
         });
