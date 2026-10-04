@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { runCode, type RunCodeResult } from "@/lib/code-runner.functions";
 import {
   Binary,
   BookOpen,
@@ -22,7 +24,7 @@ export const Route = createFileRoute("/coding")({
       {
         name: "description",
         content:
-          "Learn C, C++ and Python with theory modules, syntax references and an in-browser code editor with instant simulated compilation and output.",
+          "Learn C, C++ and Python with theory modules, syntax references and an in-browser code editor with real compilation and output.",
       },
       { property: "og:title", content: "Coding Dashboard — RiyasTech Hub" },
       {
@@ -315,267 +317,7 @@ print(f"Square = {value}")`,
   },
 };
 
-/* ---------------- simulated compiler / interpreter ---------------- */
-
-interface RunResult {
-  ok: boolean;
-  lines: string[];
-  ms: number;
-}
-
-function unescape(text: string) {
-  return text
-    .replace(/\\n/g, "\n")
-    .replace(/\\t/g, "\t")
-    .replace(/\\"/g, '"')
-    .replace(/\\\\/g, "\\");
-}
-
-function checkBalance(code: string) {
-  let depth = 0;
-  for (const ch of code) {
-    if (ch === "{") depth++;
-    if (ch === "}") depth--;
-    if (depth < 0) return "extra closing brace '}'";
-  }
-  return depth > 0 ? "missing closing brace '}'" : null;
-}
-
-function evalNumeric(expr: string, vars: Record<string, number>): number | null {
-  const replaced = expr.replace(/[A-Za-z_]\w*/g, (m) =>
-    m in vars ? String(vars[m]) : "NaN",
-  );
-  if (!/^[-+*/%(). 0-9NaN]+$/.test(replaced)) return null;
-  try {
-    // eslint-disable-next-line no-new-func
-    const value = Function(`"use strict";return (${replaced})`)() as number;
-    return Number.isFinite(value) ? value : null;
-  } catch {
-    return null;
-  }
-}
-
-function runC(code: string, cpp: boolean): RunResult {
-  const start = performance.now();
-  const errors: string[] = [];
-
-  if (!/\bmain\s*\(/.test(code)) {
-    errors.push("error: undefined reference to 'main'");
-  }
-  const brace = checkBalance(code);
-  if (brace) errors.push(`error: ${brace}`);
-
-  const bodyLines = code.split("\n");
-  bodyLines.forEach((raw, i) => {
-    const line = (raw.split("//")[0] ?? "").trim();
-    if (!line || line.startsWith("#") || line.startsWith("/*") || line.startsWith("*")) return;
-    if (/[{}]$/.test(line) || line.endsWith(";") || line.endsWith(":") || line.startsWith("}")) return;
-    if (/^(if|for|while|else|switch|do|class|struct|public:|private:)/.test(line)) return;
-    errors.push(`line ${i + 1}: error: expected ';' before end of statement`);
-  });
-
-  if (cpp && /cout/.test(code) && !/#include\s*<iostream>/.test(code)) {
-    errors.push("error: 'cout' was not declared in this scope (missing #include <iostream>)");
-  }
-  if (!cpp && /printf/.test(code) && !/#include\s*<stdio\.h>/.test(code)) {
-    errors.push("warning: implicit declaration of function 'printf' (missing #include <stdio.h>)");
-  }
-
-  const hard = errors.filter((e) => e.includes("error:"));
-  if (hard.length) {
-    return {
-      ok: false,
-      lines: [`${cpp ? "g++" : "gcc"} main.${cpp ? "cpp" : "c"} -o main`, ...errors],
-      ms: performance.now() - start,
-    };
-  }
-
-  const vars: Record<string, number> = {};
-  const declRe = /\b(?:int|long|float|double)\s+([A-Za-z_]\w*)\s*=\s*([^;,]+)/g;
-  let d: RegExpExecArray | null;
-  while ((d = declRe.exec(code))) {
-    const v = evalNumeric(d[2] ?? "", vars);
-    if (v !== null) vars[d[1] ?? "_"] = v;
-  }
-
-  const out: string[] = [];
-
-  // simple accumulate loop: for (...; i <= n; i++) { sum += i; }
-  const loopRe =
-    /for\s*\(\s*(?:int\s+)?([A-Za-z_]\w*)\s*=\s*([^;]+);\s*\1\s*(<=|<)\s*([^;]+);[^)]*\)\s*\{?\s*([A-Za-z_]\w*)\s*\+=\s*\1\s*;/g;
-  let l: RegExpExecArray | null;
-  while ((l = loopRe.exec(code))) {
-    const from = evalNumeric(l[2] ?? "", vars);
-    const to = evalNumeric(l[4] ?? "", vars);
-    const target = l[5] ?? "_";
-    if (from === null || to === null) continue;
-    let acc = vars[target] ?? 0;
-    for (let i = from; l[3] === "<=" ? i <= to : i < to; i++) acc += i;
-    vars[target] = acc;
-  }
-
-  if (cpp) {
-    const coutRe = /cout\s*((?:<<\s*[^;]+?)+);/g;
-    let m: RegExpExecArray | null;
-    while ((m = coutRe.exec(code))) {
-      let text = "";
-      for (const part of (m[1] ?? "").split("<<").map((p) => p.trim()).filter(Boolean)) {
-        if (/^endl$/.test(part)) text += "\n";
-        else if (/^"(.*)"$/s.test(part)) text += unescape(part.slice(1, -1));
-        else {
-          const v = evalNumeric(part, vars);
-          text += v !== null ? String(v) : part;
-        }
-      }
-      out.push(...text.split("\n"));
-    }
-  } else {
-    const pfRe = /printf\s*\(\s*"([^"]*)"\s*((?:,[^;]+)?)\)\s*;/g;
-    let m: RegExpExecArray | null;
-    while ((m = pfRe.exec(code))) {
-      let text = unescape(m[1] ?? "");
-      const args = (m[2] ?? "")
-        .replace(/^,/, "")
-        .split(",")
-        .map((a) => a.trim())
-        .filter(Boolean);
-      let ai = 0;
-      text = text.replace(/%[-0-9.lu]*[dfcsu]/g, () => {
-        const a = args[ai++];
-        if (a === undefined) return "";
-        const v = evalNumeric(a, vars);
-        return v !== null ? String(v) : a.replace(/^"|"$/g, "");
-      });
-      out.push(...text.split("\n"));
-    }
-  }
-
-  const clean = out.filter((line, i, arr) => !(line === "" && i === arr.length - 1));
-  return {
-    ok: true,
-    lines: [
-      `${cpp ? "g++" : "gcc"} main.${cpp ? "cpp" : "c"} -o main`,
-      "Compilation successful.",
-      "",
-      ...(clean.length ? clean : ["(no output produced)"]),
-      "",
-      "[Process exited with code 0]",
-    ],
-    ms: performance.now() - start,
-  };
-}
-
-function runPython(code: string): RunResult {
-  const start = performance.now();
-  const lines = code.split("\n");
-  const errors: string[] = [];
-
-  lines.forEach((raw, i) => {
-    const line = (raw.split("#")[0] ?? "").trimEnd();
-    if (!line.trim()) return;
-    if (/^\s*(if|elif|else|for|while|def|class|try|except|finally|with)\b.*[^:]$/.test(line)) {
-      errors.push(`  File "main.py", line ${i + 1}\nSyntaxError: expected ':'`);
-    }
-    if (/\t/.test(line) && / {2,}/.test(line)) {
-      errors.push(`  File "main.py", line ${i + 1}\nTabError: inconsistent use of tabs and spaces`);
-    }
-  });
-
-  if (errors.length) {
-    return { ok: false, lines: ["Traceback (most recent call last):", ...errors], ms: performance.now() - start };
-  }
-
-  const vars: Record<string, number> = {};
-  const strVars: Record<string, string> = {};
-  const out: string[] = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = (lines[i]?.split("#")[0] ?? "").trim();
-    if (!line) continue;
-
-    const assign = line.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/);
-    if (assign && !line.startsWith("print")) {
-      const rhs = (assign[2] ?? "").trim();
-      const s = rhs.match(/^["'](.*)["']$/);
-      if (s) strVars[assign[1] ?? ""] = s[1] ?? "";
-      else {
-        const v = evalNumeric(rhs, vars);
-        if (v !== null) vars[assign[1] ?? ""] = v;
-      }
-      continue;
-    }
-
-    // for i in range(a, b): total += i
-    const forMatch = line.match(/^for\s+([A-Za-z_]\w*)\s+in\s+range\(([^)]*)\)\s*:$/);
-    if (forMatch) {
-      const args = (forMatch[2] ?? "").split(",").map((a) => evalNumeric(a.trim(), vars));
-      const from = args.length > 1 ? (args[0] ?? 0) : 0;
-      const to = args.length > 1 ? (args[1] ?? 0) : (args[0] ?? 0);
-      const bodyIdx = i + 1;
-      const body = lines[bodyIdx]?.trim() ?? "";
-      const acc = body.match(/^([A-Za-z_]\w*)\s*\+=\s*(.+)$/);
-      if (acc) {
-        let sum = vars[acc[1] ?? ""] ?? 0;
-        for (let k = from; k < to; k++) {
-          const step = evalNumeric(acc[2] ?? "", { ...vars, [forMatch[1] ?? "i"]: k });
-          sum += step ?? 0;
-        }
-        vars[acc[1] ?? ""] = sum;
-        i = bodyIdx;
-      }
-      continue;
-    }
-
-    const printMatch = line.match(/^print\s*\((.*)\)\s*$/);
-    if (printMatch) {
-      const parts: string[] = [];
-      let depth = 0;
-      let current = "";
-      for (const ch of printMatch[1] ?? "") {
-        if (ch === "(") depth++;
-        if (ch === ")") depth--;
-        if (ch === "," && depth === 0) {
-          parts.push(current);
-          current = "";
-        } else current += ch;
-      }
-      if (current.trim()) parts.push(current);
-
-      const rendered = parts
-        .map((p) => p.trim())
-        .filter((p) => !/^(end|sep)\s*=/.test(p))
-        .map((p) => {
-          const f = p.match(/^f["'](.*)["']$/s);
-          if (f) {
-            return (f[1] ?? "").replace(/\{([^}]+)\}/g, (_: string, ex: string) => {
-              const name = ex.trim();
-              if (name in strVars) return strVars[name] ?? "";
-              const v = evalNumeric(name, vars);
-              return v !== null ? String(v) : `{${name}}`;
-            });
-          }
-          const s = p.match(/^["'](.*)["']$/s);
-          if (s) return s[1] ?? "";
-          if (p in strVars) return strVars[p] ?? "";
-          const v = evalNumeric(p, vars);
-          return v !== null ? String(v) : p;
-        });
-      out.push(rendered.join(" "));
-    }
-  }
-
-  return {
-    ok: true,
-    lines: [
-      "python3 main.py",
-      "",
-      ...(out.length ? out : ["(no output produced)"]),
-      "",
-      "[Process finished with exit code 0]",
-    ],
-    ms: performance.now() - start,
-  };
-}
+type RunResult = RunCodeResult;
 
 /* ---------------- testimonials ---------------- */
 
@@ -613,19 +355,27 @@ function CodingPage() {
     python: null,
   });
   const [running, setRunning] = useState(false);
+  const [stdin, setStdin] = useState("");
 
   const content = CONTENT[lang];
   const active = result[lang];
   const lineCount = useMemo(() => code[lang].split("\n").length, [code, lang]);
 
-  const run = () => {
+  const execute = useServerFn(runCode);
+  const run = async () => {
     setRunning(true);
-    const source = code[lang];
-    window.setTimeout(() => {
-      const res = lang === "python" ? runPython(source) : runC(source, lang === "cpp");
-      setResult((r) => ({ ...r, [lang]: res }));
+    const current = lang;
+    try {
+      const res = await execute({ data: { lang: current, code: code[current], stdin } });
+      setResult((r) => ({ ...r, [current]: res }));
+    } catch (e) {
+      setResult((r) => ({
+        ...r,
+        [current]: { ok: false, ms: 0, lines: [`Could not reach the code runner: ${(e as Error).message}`] },
+      }));
+    } finally {
       setRunning(false);
-    }, 320);
+    }
   };
 
   const reset = () => {
@@ -739,6 +489,16 @@ function CodingPage() {
           </div>
 
           <div className="border-t border-border/60 p-4">
+            <label htmlFor="stdin" className="mb-1 block text-xs font-semibold text-muted-foreground">
+              Program input (optional — used by scanf / cin / input())
+            </label>
+            <textarea
+              id="stdin"
+              value={stdin}
+              onChange={(e) => setStdin(e.target.value)}
+              rows={2}
+              className="mb-3 w-full resize-y rounded-lg border border-border/60 bg-background/40 p-2 font-mono text-xs text-foreground outline-none focus:border-primary/60"
+            />
             <button
               onClick={run}
               disabled={running}
