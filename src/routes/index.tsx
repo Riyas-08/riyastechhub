@@ -50,6 +50,7 @@ function Index() {
           </span>
           <h1 className="mt-6 font-display text-4xl font-extrabold leading-tight sm:text-6xl">
             <span className="neon-text">RiyasTech Hub</span>
+            <span className="sr-only"> — AI Hardware Project Platform for Engineering Students</span>
           </h1>
           <p className="mt-3 text-sm uppercase tracking-[0.24em] text-muted-foreground sm:text-base">
             Kumaraguru College of Technology

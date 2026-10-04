@@ -80,18 +80,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RiyasTech Hub — Hardware Project Intelligence" },
-      {
-        name: "description",
-        content:
-          "AI hardware project platform for electronics students: component lists, vendor pricing, viva prep and Riya AI.",
-      },
       { name: "author", content: "Riyas U" },
-      { property: "og:title", content: "RiyasTech Hub" },
-      {
-        property: "og:description",
-        content: "AI-powered hardware project companion for electronics students.",
-      },
+      { property: "og:site_name", content: "RiyasTech Hub" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
