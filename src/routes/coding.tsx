@@ -489,6 +489,16 @@ function CodingPage() {
           </div>
 
           <div className="border-t border-border/60 p-4">
+            <label htmlFor="stdin" className="mb-1 block text-xs font-semibold text-muted-foreground">
+              Program input (optional — used by scanf / cin / input())
+            </label>
+            <textarea
+              id="stdin"
+              value={stdin}
+              onChange={(e) => setStdin(e.target.value)}
+              rows={2}
+              className="mb-3 w-full resize-y rounded-lg border border-border/60 bg-background/40 p-2 font-mono text-xs text-foreground outline-none focus:border-primary/60"
+            />
             <button
               onClick={run}
               disabled={running}
