@@ -153,9 +153,9 @@ function EnterPage() {
           </div>
 
           <div className="grid gap-2">
-            <Label>District</Label>
+            <Label htmlFor="district">District</Label>
             <Select value={district} onValueChange={setDistrict}>
-              <SelectTrigger>
+              <SelectTrigger id="district">
                 <SelectValue placeholder="Select your district" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
