@@ -1,0 +1,285 @@
+{
+  "version": 1,
+  "sdk_version": "3.0.4",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "riyastech-hub",
+      "version": "0.1.0",
+      "title": "RiyasTech Hub"
+    },
+    "tools": [
+      {
+        "name": "list_departments",
+        "title": "List engineering departments",
+        "description": "List every engineering department that has a 4-year course and placement roadmap.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_department_roadmap",
+        "title": "Get department placement roadmap",
+        "description": "Get the year-by-year subjects, skills, tools, projects and career roles for one department.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "department_id": {
+              "type": "string",
+              "description": "Department id from list_departments, e.g. 'ece'."
+            },
+            "year": {
+              "description": "Only return this year (1-4).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          },
+          "required": [
+            "department_id"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_roadmaps",
+        "title": "Search roadmaps",
+        "description": "Search skills, tools, subjects and projects across all department roadmaps.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 2,
+              "description": "Skill, tool or project keyword."
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_placement_prep_stages",
+        "title": "Placement preparation stages",
+        "description": "Get the four-stage core-company placement preparation timeline.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_branches",
+        "title": "List engineering branches",
+        "description": "List the engineering branches used by the core company explorer, with their industry domains.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_companies",
+        "title": "Search core companies",
+        "description": "Find core engineering companies by branch, industry or keyword.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "branch": {
+              "description": "Branch id from list_branches, e.g. 'ece'.",
+              "type": "string"
+            },
+            "industry": {
+              "description": "Industry or domain keyword, e.g. 'semiconductor'.",
+              "type": "string"
+            },
+            "query": {
+              "description": "Free-text keyword matched against name, roles and skills.",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_company",
+        "title": "Get company profile",
+        "description": "Get a company's roles, required skills, tools, subjects, projects and interview topics.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "company_id": {
+              "type": "string",
+              "description": "Company id from search_companies."
+            }
+          },
+          "required": [
+            "company_id"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_job_roles",
+        "title": "List core job roles",
+        "description": "List core engineering job roles with hiring companies, skills, tools and learning path.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_coding_problems",
+        "title": "List coding problems",
+        "description": "List placement coding practice problems, optionally filtered by language and difficulty.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "language": {
+              "type": "string",
+              "enum": [
+                "c",
+                "cpp",
+                "python"
+              ]
+            },
+            "difficulty": {
+              "type": "string",
+              "enum": [
+                "Easy",
+                "Medium",
+                "Hard"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_coding_problem",
+        "title": "Get coding problem",
+        "description": "Get a coding problem's statement and sample test cases.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "problem_id": {
+              "type": "string",
+              "description": "Problem id from list_coding_problems."
+            }
+          },
+          "required": [
+            "problem_id"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_coding_syllabus",
+        "title": "Get coding syllabus",
+        "description": "Get the C, C++ or Python placement syllabus with theory and example code.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "language": {
+              "type": "string",
+              "enum": [
+                "c",
+                "cpp",
+                "python"
+              ]
+            }
+          },
+          "required": [
+            "language"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
