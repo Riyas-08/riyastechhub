@@ -18,6 +18,7 @@ import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as EnterRouteImport } from './routes/enter'
 import { Route as GuideRouteImport } from './routes/guide'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PlacementRouteImport } from './routes/placement'
 import { Route as PremiumRouteImport } from './routes/premium'
@@ -25,6 +26,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as RiyaRouteImport } from './routes/riya'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -71,6 +73,11 @@ const GuideRoute = GuideRouteImport.update({
   path: '/guide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
@@ -107,6 +114,11 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -118,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
@@ -125,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -136,6 +150,7 @@ export interface FileRoutesByTo {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
@@ -143,6 +158,7 @@ export interface FileRoutesByTo {
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -155,6 +171,7 @@ export interface FileRoutesById {
   '/connect': typeof ConnectRoute
   '/enter': typeof EnterRoute
   '/guide': typeof GuideRoute
+  '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
@@ -162,6 +179,7 @@ export interface FileRoutesById {
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -175,6 +193,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/login'
     | '/mcp'
     | '/placement'
     | '/premium'
@@ -182,6 +201,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/riya'
     | '/.well-known/oauth-protected-resource'
+    | '/.lovable/oauth/consent'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -193,6 +213,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/login'
     | '/mcp'
     | '/placement'
     | '/premium'
@@ -200,6 +221,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/riya'
     | '/.well-known/oauth-protected-resource'
+    | '/.lovable/oauth/consent'
   id:
     | '__root__'
     | '/'
@@ -211,6 +233,7 @@ export interface FileRouteTypes {
     | '/connect'
     | '/enter'
     | '/guide'
+    | '/login'
     | '/mcp'
     | '/placement'
     | '/premium'
@@ -218,6 +241,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/riya'
     | '/.well-known/oauth-protected-resource'
+    | '/.lovable/oauth/consent'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -230,6 +254,7 @@ export interface RootRouteChildren {
   ConnectRoute: typeof ConnectRoute
   EnterRoute: typeof EnterRoute
   GuideRoute: typeof GuideRoute
+  LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
   PlacementRoute: typeof PlacementRoute
   PremiumRoute: typeof PremiumRoute
@@ -237,6 +262,7 @@ export interface RootRouteChildren {
   ReferralsRoute: typeof ReferralsRoute
   RiyaRoute: typeof RiyaRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -304,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mcp': {
       id: '/mcp'
       path: '/mcp'
@@ -353,6 +386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -366,6 +406,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConnectRoute: ConnectRoute,
   EnterRoute: EnterRoute,
   GuideRoute: GuideRoute,
+  LoginRoute: LoginRoute,
   McpRoute: McpRoute,
   PlacementRoute: PlacementRoute,
   PremiumRoute: PremiumRoute,
@@ -374,6 +415,7 @@ const rootRouteChildren: RootRouteChildren = {
   RiyaRoute: RiyaRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

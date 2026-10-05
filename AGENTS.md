@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- MCP server requires OAuth sign-in (backend auth as authorization server; consent at /.lovable/oauth/consent, sign-in at /login) — prevents anonymous access to app tools.
