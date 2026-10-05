@@ -19,6 +19,7 @@ const NAV = [
   { to: "/riya", label: "Riya AI" },
   { to: "/about", label: "Owner" },
   { to: "/connect", label: "Learn & Contact" },
+  { to: "/agent-connect", label: "Connect AI" },
 ] as const;
 
 export function SiteHeader() {

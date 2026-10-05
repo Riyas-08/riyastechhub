@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AgentConnectRouteImport } from './routes/agent-connect'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as CodingRouteImport } from './routes/coding'
 import { Route as CompaniesRouteImport } from './routes/companies'
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentConnectRoute = AgentConnectRouteImport.update({
+  id: '/agent-connect',
+  path: '/agent-connect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyzeRoute = AnalyzeRouteImport.update({
@@ -123,6 +129,7 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/agent-connect': typeof AgentConnectRoute
   '/analyze': typeof AnalyzeRoute
   '/coding': typeof CodingRoute
   '/companies': typeof CompaniesRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/agent-connect': typeof AgentConnectRoute
   '/analyze': typeof AnalyzeRoute
   '/coding': typeof CodingRoute
   '/companies': typeof CompaniesRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/agent-connect': typeof AgentConnectRoute
   '/analyze': typeof AnalyzeRoute
   '/coding': typeof CodingRoute
   '/companies': typeof CompaniesRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/agent-connect'
     | '/analyze'
     | '/coding'
     | '/companies'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/agent-connect'
     | '/analyze'
     | '/coding'
     | '/companies'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/agent-connect'
     | '/analyze'
     | '/coding'
     | '/companies'
@@ -247,6 +259,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AgentConnectRoute: typeof AgentConnectRoute
   AnalyzeRoute: typeof AnalyzeRoute
   CodingRoute: typeof CodingRoute
   CompaniesRoute: typeof CompaniesRoute
@@ -279,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent-connect': {
+      id: '/agent-connect'
+      path: '/agent-connect'
+      fullPath: '/agent-connect'
+      preLoaderRoute: typeof AgentConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analyze': {
@@ -399,6 +419,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AgentConnectRoute: AgentConnectRoute,
   AnalyzeRoute: AnalyzeRoute,
   CodingRoute: CodingRoute,
   CompaniesRoute: CompaniesRoute,
