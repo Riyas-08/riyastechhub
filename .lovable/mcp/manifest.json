@@ -3,12 +3,16 @@
   "sdk_version": "3.0.4",
   "path": "/mcp",
   "auth": {
-    "type": "none"
+    "type": "oauth",
+    "issuer": "https://zdoesobwcbwygwcmtkpy.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
   },
   "mcp": {
     "server": {
       "name": "riyastech-hub",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "title": "RiyasTech Hub"
     },
     "tools": [
