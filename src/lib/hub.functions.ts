@@ -5,6 +5,7 @@ import {
   adminOverview,
   confirmOtp,
   issueOtp,
+  recordPayment,
   referralHub,
   saveAcademics,
   storeFeedback,
@@ -78,3 +79,14 @@ export const submitFeedback = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => storeFeedback(data));
+export const reportPayment = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        memberId: z.string().uuid().nullable(),
+        plan: z.enum(["analysis", "viva"]),
+        status: z.enum(["submitted", "proof_uploaded"]),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }) => recordPayment(data));
