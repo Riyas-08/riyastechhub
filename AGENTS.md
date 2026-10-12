@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - MCP server requires OAuth sign-in (backend auth as authorization server; consent at /.lovable/oauth/consent, sign-in at /login) — prevents anonymous access to app tools.
+- Slack alerts are sent server-side from hub.server.ts via slack.server.ts, deduped by unique event_key in slack_notifications; awaited (not fire-and-forget) because Workers drop floating promises.
