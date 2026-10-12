@@ -6,7 +6,9 @@ import { toast } from "sonner";
 import { PageShell } from "@/components/site-shell";
 import { Button } from "@/components/ui/button";
 import qrAsset from "@/assets/payment-qr.jpg.asset.json";
-import { setPremium, usePremium } from "@/lib/session";
+import { reportPayment } from "@/lib/hub.functions";
+import { setPremium, useMember, usePremium } from "@/lib/session";
+import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/premium")({
@@ -59,9 +61,18 @@ function PremiumPage() {
   const navigate = useNavigate();
   const premium = usePremium();
   const [proof, setProof] = useState<string | null>(null);
+  const [lastPlan, setLastPlan] = useState<"analysis" | "viva">("analysis");
+  const member = useMember();
+  const report = useServerFn(reportPayment);
+
+  function notify(plan: "analysis" | "viva", status: "submitted" | "proof_uploaded") {
+    report({ data: { memberId: member?.id ?? null, plan, status } }).catch(() => undefined);
+  }
 
   function unlock(id: "analysis" | "viva") {
     setPremium({ ...premium, [id]: true });
+    setLastPlan(id);
+    notify(id, "submitted");
     toast.success(
       id === "analysis" ? "Project Analysis unlocked" : "Viva Question Bank unlocked",
     );
@@ -75,6 +86,7 @@ function PremiumPage() {
     }
     const reader = new FileReader();
     reader.onload = () => setProof(String(reader.result));
+    notify(lastPlan, "proof_uploaded");
     reader.readAsDataURL(file);
   }
 
