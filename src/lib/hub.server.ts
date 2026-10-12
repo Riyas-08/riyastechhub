@@ -1,5 +1,7 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
+import { maskMobile, notifySlack } from "./slack.server";
+
 export type MemberPublic = {
   id: string;
   username: string;
@@ -130,22 +132,41 @@ export async function confirmOtp(input: {
     .single();
   if (insErr) throw new Error(insErr.message);
 
+  let referrerName: string | null = null;
   if (referrerId) {
-    await supabaseAdmin.from("referrals").insert({
-      referrer_id: referrerId,
-      referred_id: created.id,
-      credits_awarded: REFERRAL_CREDITS,
-    });
+    const { data: refRow } = await supabaseAdmin
+      .from("referrals")
+      .insert({
+        referrer_id: referrerId,
+        referred_id: created.id,
+        credits_awarded: REFERRAL_CREDITS,
+      })
+      .select("id")
+      .single();
     const { data: referrer } = await supabaseAdmin
       .from("members")
-      .select("credits")
+      .select("credits, username")
       .eq("id", referrerId)
       .single();
+    referrerName = referrer?.username ?? null;
     await supabaseAdmin
       .from("members")
       .update({ credits: (referrer?.credits ?? 0) + REFERRAL_CREDITS })
       .eq("id", referrerId);
+    await notifySlack("referral", `referral:${refRow?.id ?? created.id}`, "New referral", {
+      Referrer: referrerName,
+      "New member": created.username,
+      District: created.district,
+      "Credits awarded": REFERRAL_CREDITS,
+    });
   }
+
+  await notifySlack("registration", `registration:${created.id}`, "New student registration", {
+    Name: created.username,
+    District: created.district,
+    Mobile: maskMobile(created.mobile),
+    "Referred by": referrerName,
+  });
 
   return { ok: true as const, member: toPublic(created as MemberRow), isNew: true };
 }
@@ -228,17 +249,40 @@ export async function adminOverview() {
   };
 }
 
+async function memberLabel(memberId: string | null) {
+  if (!memberId) return { name: "Guest", department: null as string | null };
+  const { data } = await supabaseAdmin
+    .from("members")
+    .select("username, department")
+    .eq("id", memberId)
+    .maybeSingle();
+  return { name: data?.username ?? "Guest", department: data?.department ?? null };
+}
+
 export async function storeProject(input: {
   memberId: string | null;
   title: string;
   description: string;
   components?: unknown;
 }) {
-  await supabaseAdmin.from("projects").insert({
-    member_id: input.memberId,
-    title: input.title,
-    description: input.description,
-    components: input.components as never,
+  const { data, error } = await supabaseAdmin
+    .from("projects")
+    .insert({
+      member_id: input.memberId,
+      title: input.title,
+      description: input.description,
+      components: input.components as never,
+    })
+    .select("id")
+    .single();
+  if (error || !data) return;
+  const who = await memberLabel(input.memberId);
+  const count = Array.isArray(input.components) ? input.components.length : null;
+  await notifySlack("project", `project:${data.id}`, "New project analysis request", {
+    Project: input.title,
+    Student: who.name,
+    Department: who.department,
+    Components: count,
   });
 }
 
@@ -247,11 +291,44 @@ export async function storeFeedback(input: {
   rating: number;
   message: string;
 }) {
-  const { error } = await supabaseAdmin.from("feedback").insert({
-    member_id: input.memberId,
-    rating: input.rating,
-    message: input.message,
-  });
+  const { data, error } = await supabaseAdmin
+    .from("feedback")
+    .insert({
+      member_id: input.memberId,
+      rating: input.rating,
+      message: input.message,
+    })
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
+  const who = await memberLabel(input.memberId);
+  await notifySlack("feedback", `feedback:${data.id}`, "New feedback & rating", {
+    Rating: `${"★".repeat(input.rating)}${"☆".repeat(5 - input.rating)} (${input.rating}/5)`,
+    From: who.name,
+    Message: input.message || null,
+  });
+  return { ok: true as const };
+}
+
+const PLAN_PRICES = { analysis: 99, viva: 49 } as const;
+
+export async function recordPayment(input: {
+  memberId: string | null;
+  plan: "analysis" | "viva";
+  status: "submitted" | "proof_uploaded";
+}) {
+  const amount = PLAN_PRICES[input.plan];
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .insert({ member_id: input.memberId, plan: input.plan, amount, status: input.status })
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  const who = await memberLabel(input.memberId);
+  await notifySlack("payment", `payment:${data.id}`, "Payment status change", {
+    Plan: input.plan === "analysis" ? "Project Analysis (₹99/month)" : "Viva Questions (₹49)",
+    Status: input.status === "submitted" ? "Marked as paid — verify in UPI app" : "Screenshot uploaded — verify",
+    Student: who.name,
+  });
   return { ok: true as const };
 }
