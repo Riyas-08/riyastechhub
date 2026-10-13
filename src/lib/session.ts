@@ -9,6 +9,7 @@ export type Member = {
   yearOfStudy: string | null;
   referralCode: string;
   credits: number;
+  token?: string;
 };
 
 export type ProjectAnalysis = {

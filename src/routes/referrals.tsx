@@ -35,7 +35,7 @@ function ReferralsPage() {
   const hubQuery = useQuery({
     queryKey: ["referral-hub", member?.id],
     enabled: !!member,
-    queryFn: () => hub({ data: { memberId: member!.id } }),
+    queryFn: () => hub({ data: { token: member!.token ?? "" } }),
   });
 
   const adminQuery = useQuery({ queryKey: ["admin-overview"], queryFn: () => admin({}) });
