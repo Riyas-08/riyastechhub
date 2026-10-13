@@ -9,7 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const safeNext = (n?: string) => (n && n.startsWith("/") && !n.startsWith("//") ? n : "/");
+const safeNext = (n?: string) => {
+  if (!n || !n.startsWith("/") || n.startsWith("//") || /[\\\s]/.test(n)) return "/";
+  try {
+    const base = "https://app.invalid";
+    const u = new URL(n, base);
+    return u.origin === base ? u.pathname + u.search + u.hash : "/";
+  } catch {
+    return "/";
+  }
+};
 
 export const Route = createFileRoute("/login")({
   ssr: false,
