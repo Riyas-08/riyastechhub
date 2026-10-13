@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
+import { paymentApprovalSig } from "./member-token.server";
 import { maskMobile, notifySlack } from "./slack.server";
 
 export type MemberPublic = {
@@ -332,10 +333,63 @@ export async function recordPayment(input: {
     .single();
   if (error) throw new Error(error.message);
   const who = await memberLabel(input.memberId);
+  const site = process.env["PUBLIC_SITE_URL"] || "https://riyastechhub.lovable.app";
+  const approveUrl = input.memberId
+    ? `${site}/api/public/payments/approve?id=${data.id}&sig=${await paymentApprovalSig(data.id)}`
+    : null;
   await notifySlack("payment", `payment:${data.id}`, "Payment status change", {
     Plan: input.plan === "analysis" ? "Project Analysis (₹99/month)" : "Viva Questions (₹49)",
     Status: input.status === "submitted" ? "Marked as paid — verify in UPI app" : "Screenshot uploaded — verify",
     Student: who.name,
+    "Approve after checking UPI": approveUrl ? `<${approveUrl}|Open approval page>` : "Guest — cannot be approved",
   });
   return { ok: true as const };
+}
+const ANALYSIS_PERIOD_MS = 31 * 24 * 60 * 60 * 1000;
+
+export async function entitlements(memberId: string) {
+  const { data } = await supabaseAdmin
+    .from("payments")
+    .select("plan, created_at")
+    .eq("member_id", memberId)
+    .eq("status", "approved");
+  const rows = data ?? [];
+  return {
+    viva: rows.some((r) => r.plan === "viva"),
+    analysis: rows.some(
+      (r) => r.plan === "analysis" && Date.now() - new Date(r.created_at).getTime() < ANALYSIS_PERIOD_MS,
+    ),
+  };
+}
+
+/** Senior-year (3rd/4th) members need an owner-approved payment for paid features. */
+export async function assertFeatureAccess(memberId: string, plan: "analysis" | "viva") {
+  const { data: m } = await supabaseAdmin
+    .from("members")
+    .select("year_of_study")
+    .eq("id", memberId)
+    .maybeSingle();
+  if (!m) throw new Error("Please sign in again.");
+  const year = m.year_of_study ?? "";
+  const senior = year.startsWith("3rd") || year.startsWith("4th");
+  if (!senior) return;
+  const ent = await entitlements(memberId);
+  if (!ent[plan]) {
+    throw new Error(
+      plan === "viva"
+        ? "Viva Question Bank is premium. Your access unlocks once your ₹49 payment is approved."
+        : "Senior-year analysis is premium. Your access unlocks once your ₹99 payment is approved.",
+    );
+  }
+}
+
+export async function approvePayment(paymentId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .update({ status: "approved" })
+    .eq("id", paymentId)
+    .select("id, plan")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
 }

@@ -7,7 +7,7 @@ import { PageShell } from "@/components/site-shell";
 import { Button } from "@/components/ui/button";
 import qrAsset from "@/assets/payment-qr.jpg.asset.json";
 import { reportPayment } from "@/lib/hub.functions";
-import { setPremium, useMember, usePremium } from "@/lib/session";
+import { useMember, usePremium } from "@/lib/session";
 import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
 
@@ -61,6 +61,7 @@ function PremiumPage() {
   const navigate = useNavigate();
   const premium = usePremium();
   const [proof, setProof] = useState<string | null>(null);
+  const [requested, setRequested] = useState<{ analysis?: boolean; viva?: boolean }>({});
   const [lastPlan, setLastPlan] = useState<"analysis" | "viva">("analysis");
   const member = useMember();
   const report = useServerFn(reportPayment);
@@ -70,12 +71,17 @@ function PremiumPage() {
   }
 
   function unlock(id: "analysis" | "viva") {
-    setPremium({ ...premium, [id]: true });
+    if (!member?.token) {
+      toast.error("Please sign in first so we can link the payment to your account.");
+      navigate({ to: "/enter" });
+      return;
+    }
     setLastPlan(id);
+    setRequested((r) => ({ ...r, [id]: true }));
     notify(id, "submitted");
-    toast.success(
-      id === "analysis" ? "Project Analysis unlocked" : "Viva Question Bank unlocked",
-    );
+    toast.success("Payment submitted", {
+      description: "Your plan unlocks as soon as the payment is verified. Upload the screenshot below to speed it up.",
+    });
   }
 
   function onProof(file: File | undefined) {
@@ -120,10 +126,14 @@ function PremiumPage() {
                 className="mt-5 w-full text-neon-foreground"
                 style={!active ? { backgroundImage: "var(--gradient-neon)" } : undefined}
                 variant={active ? "outline" : "default"}
-                disabled={active}
+                disabled={active || requested[plan.id]}
                 onClick={() => unlock(plan.id)}
               >
-                {active ? "Unlocked" : `I've paid ₹${plan.price} — unlock`}
+                {active
+                  ? "Unlocked"
+                  : requested[plan.id]
+                    ? "Awaiting verification"
+                    : `I've paid ₹${plan.price} — request unlock`}
               </Button>
             </article>
           );
