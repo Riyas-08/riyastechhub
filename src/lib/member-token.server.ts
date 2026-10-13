@@ -43,3 +43,16 @@ export async function requireMember(token: string | null | undefined) {
   if (!id) throw new Error("Your session has expired. Please sign in again.");
   return id;
 }
+
+/** Signature for the one-click payment approval link sent to the owner's private Slack channel. */
+export async function paymentApprovalSig(paymentId: string) {
+  return sign(`approve-payment:${paymentId}`);
+}
+
+export async function verifyPaymentApprovalSig(paymentId: string, sig: string) {
+  const expected = await paymentApprovalSig(paymentId);
+  if (expected.length !== sig.length) return false;
+  let diff = 0;
+  for (let i = 0; i < sig.length; i++) diff |= expected.charCodeAt(i) ^ sig.charCodeAt(i);
+  return diff === 0;
+}
