@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   adminOverview,
   confirmOtp,
+  entitlements,
   issueOtp,
   recordPayment,
   referralHub,
@@ -107,3 +108,10 @@ export const reportPayment = createServerFn({ method: "POST" })
   .handler(async ({ data }) =>
     recordPayment({ memberId: await verifyMemberToken(data.token), plan: data.plan, status: data.status }),
   );
+
+export const getEntitlements = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => z.object({ token: z.string().max(500) }).parse(d))
+  .handler(async ({ data }) => {
+    const memberId = await verifyMemberToken(data.token);
+    return memberId ? entitlements(memberId) : { analysis: false, viva: false };
+  });

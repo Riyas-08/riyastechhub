@@ -67,6 +67,7 @@ function GuidePage() {
           title: project!.title,
           description: project!.description,
           count,
+          token: member?.token ?? "",
         },
       }),
     onSuccess: (qs) => {

@@ -66,7 +66,7 @@ function AnalyzePage() {
   const mutation = useMutation({
     mutationFn: async () => {
       const result = await analyze({
-        data: { title: title.trim(), description: description.trim() },
+        data: { token: member?.token ?? "", title: title.trim(), description: description.trim() },
       });
       await persist({
         data: {

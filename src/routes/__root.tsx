@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { RiyaDock } from "@/components/riya-dock";
+import { PremiumSync } from "@/components/premium-sync";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -135,6 +136,7 @@ function RootComponent() {
         <SiteFooter />
       </div>
       <RiyaDock />
+      <PremiumSync />
       <Toaster position="top-center" />
     </QueryClientProvider>
   );

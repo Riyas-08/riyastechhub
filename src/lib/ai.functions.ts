@@ -8,6 +8,8 @@ import {
   riyaChat,
   troubleshootQuery,
 } from "./ai.server";
+import { assertFeatureAccess } from "./hub.server";
+import { requireMember } from "./member-token.server";
 
 export const identifyComponent = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
@@ -27,12 +29,16 @@ export const analyzeProject = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
+        token: z.string().max(500),
         title: z.string().trim().min(3).max(200),
         description: z.string().trim().max(4000).default(""),
       })
       .parse(d),
   )
-  .handler(async ({ data }) => analyzeHardwareProject(data.title, data.description));
+  .handler(async ({ data }) => {
+    await assertFeatureAccess(await requireMember(data.token), "analysis");
+    return analyzeHardwareProject(data.title, data.description);
+  });
 
 export const buildVivaBank = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
@@ -41,10 +47,14 @@ export const buildVivaBank = createServerFn({ method: "POST" })
         title: z.string().trim().min(3).max(200),
         description: z.string().trim().max(4000),
         count: z.number().int().min(20).max(100),
+        token: z.string().max(500),
       })
       .parse(d),
   )
-  .handler(async ({ data }) => generateViva(data.title, data.description, data.count));
+  .handler(async ({ data }) => {
+    await assertFeatureAccess(await requireMember(data.token), "viva");
+    return generateViva(data.title, data.description, data.count);
+  });
 
 export const askTroubleshooter = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
