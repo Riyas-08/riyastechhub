@@ -28,6 +28,7 @@ import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as RiyaRouteImport } from './routes/riya'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as ApiPublicPaymentsApproveRouteImport } from './routes/api/public/payments/approve'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -125,6 +126,12 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsApproveRoute =
+  ApiPublicPaymentsApproveRouteImport.update({
+    id: '/api/public/payments/approve',
+    path: '/api/public/payments/approve',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/api/public/payments/approve': typeof ApiPublicPaymentsApproveRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -167,6 +175,7 @@ export interface FileRoutesByTo {
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/api/public/payments/approve': typeof ApiPublicPaymentsApproveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -189,6 +198,7 @@ export interface FileRoutesById {
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/api/public/payments/approve': typeof ApiPublicPaymentsApproveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/riya'
     | '/.well-known/oauth-protected-resource'
     | '/.lovable/oauth/consent'
+    | '/api/public/payments/approve'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/riya'
     | '/.well-known/oauth-protected-resource'
     | '/.lovable/oauth/consent'
+    | '/api/public/payments/approve'
   id:
     | '__root__'
     | '/'
@@ -254,6 +266,7 @@ export interface FileRouteTypes {
     | '/riya'
     | '/.well-known/oauth-protected-resource'
     | '/.lovable/oauth/consent'
+    | '/api/public/payments/approve'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -276,6 +289,7 @@ export interface RootRouteChildren {
   RiyaRoute: typeof RiyaRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  ApiPublicPaymentsApproveRoute: typeof ApiPublicPaymentsApproveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -413,6 +427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/approve': {
+      id: '/api/public/payments/approve'
+      path: '/api/public/payments/approve'
+      fullPath: '/api/public/payments/approve'
+      preLoaderRoute: typeof ApiPublicPaymentsApproveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -437,6 +458,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  ApiPublicPaymentsApproveRoute: ApiPublicPaymentsApproveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
