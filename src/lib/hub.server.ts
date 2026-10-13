@@ -15,6 +15,7 @@ export type MemberPublic = {
 
 const OTP_TTL_MS = 5 * 60 * 1000;
 const REFERRAL_CREDITS = 50;
+const MAX_REFERRALS_PER_DAY = 5;
 
 function randomCode() {
   const buf = new Uint32Array(1);
@@ -101,14 +102,8 @@ export async function confirmOtp(input: {
     .maybeSingle();
 
   if (existing) {
-    const { data: updated, error: updErr } = await supabaseAdmin
-      .from("members")
-      .update({ username: input.username, district: input.district })
-      .eq("id", existing.id)
-      .select("*")
-      .single();
-    if (updErr) throw new Error(updErr.message);
-    return { ok: true as const, member: toPublic(updated as MemberRow), isNew: false };
+    // Returning members keep their stored name and district; sign-in never overwrites a profile.
+    return { ok: true as const, member: toPublic(existing as MemberRow), isNew: false };
   }
 
   let referrerId: string | null = null;
@@ -119,6 +114,16 @@ export async function confirmOtp(input: {
       .eq("referral_code", input.referralCode.trim().toUpperCase())
       .maybeSingle();
     referrerId = ref?.id ?? null;
+    if (referrerId) {
+      // Cap referral rewards to limit credit farming with throwaway numbers.
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { count } = await supabaseAdmin
+        .from("referrals")
+        .select("id", { count: "exact", head: true })
+        .eq("referrer_id", referrerId)
+        .gte("created_at", since);
+      if ((count ?? 0) >= MAX_REFERRALS_PER_DAY) referrerId = null;
+    }
   }
 
   const { data: created, error: insErr } = await supabaseAdmin
