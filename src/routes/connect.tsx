@@ -46,7 +46,7 @@ function ConnectPage() {
 
   const mutation = useMutation({
     mutationFn: () =>
-      send({ data: { memberId: member?.id ?? null, rating, message: message.trim() } }),
+      send({ data: { token: member?.token ?? null, rating, message: message.trim() } }),
     onSuccess: () => {
       setDone(true);
       toast.success("Thanks for the feedback!");

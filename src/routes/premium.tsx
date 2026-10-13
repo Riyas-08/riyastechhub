@@ -66,7 +66,7 @@ function PremiumPage() {
   const report = useServerFn(reportPayment);
 
   function notify(plan: "analysis" | "viva", status: "submitted" | "proof_uploaded") {
-    report({ data: { memberId: member?.id ?? null, plan, status } }).catch(() => undefined);
+    report({ data: { token: member?.token ?? null, plan, status } }).catch(() => undefined);
   }
 
   function unlock(id: "analysis" | "viva") {

@@ -11,6 +11,9 @@ import {
   storeFeedback,
   storeProject,
 } from "./hub.server";
+import { issueMemberToken, requireMember, verifyMemberToken } from "./member-token.server";
+
+const token = z.string().max(500).nullable();
 
 export const sendOtp = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
@@ -30,23 +33,31 @@ export const verifyOtp = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data }) => confirmOtp(data));
+  .handler(async ({ data }) => {
+    const res = await confirmOtp(data);
+    if (!res.ok) return res;
+    return { ...res, member: { ...res.member, token: await issueMemberToken(res.member.id) } };
+  });
 
 export const updateAcademics = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
-        memberId: z.string().uuid(),
+        token: z.string().max(500),
         department: z.string().trim().min(2).max(60),
         yearOfStudy: z.string().trim().min(1).max(40),
       })
       .parse(d),
   )
-  .handler(async ({ data }) => saveAcademics(data));
+  .handler(async ({ data }) => {
+    const memberId = await requireMember(data.token);
+    const updated = await saveAcademics({ memberId, department: data.department, yearOfStudy: data.yearOfStudy });
+    return { ...updated, token: data.token };
+  });
 
 export const getReferralHub = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ memberId: z.string().uuid() }).parse(d))
-  .handler(async ({ data }) => referralHub(data.memberId));
+  .inputValidator((d: unknown) => z.object({ token: z.string().max(500) }).parse(d))
+  .handler(async ({ data }) => referralHub(await requireMember(data.token)));
 
 export const getAdminOverview = createServerFn({ method: "GET" }).handler(async () =>
   adminOverview(),
@@ -56,7 +67,7 @@ export const saveProject = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
-        memberId: z.string().uuid().nullable(),
+        token,
         title: z.string().trim().min(2).max(200),
         description: z.string().trim().max(4000),
         components: z.unknown(),
@@ -64,7 +75,8 @@ export const saveProject = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    await storeProject(data);
+    const memberId = await verifyMemberToken(data.token);
+    await storeProject({ memberId, title: data.title, description: data.description, components: data.components });
     return { ok: true as const };
   });
 
@@ -72,21 +84,26 @@ export const submitFeedback = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
-        memberId: z.string().uuid().nullable(),
+        token,
         rating: z.number().int().min(1).max(5),
         message: z.string().trim().max(1500),
       })
       .parse(d),
   )
-  .handler(async ({ data }) => storeFeedback(data));
+  .handler(async ({ data }) =>
+    storeFeedback({ memberId: await verifyMemberToken(data.token), rating: data.rating, message: data.message }),
+  );
+
 export const reportPayment = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
-        memberId: z.string().uuid().nullable(),
+        token,
         plan: z.enum(["analysis", "viva"]),
         status: z.enum(["submitted", "proof_uploaded"]),
       })
       .parse(d),
   )
-  .handler(async ({ data }) => recordPayment(data));
+  .handler(async ({ data }) =>
+    recordPayment({ memberId: await verifyMemberToken(data.token), plan: data.plan, status: data.status }),
+  );

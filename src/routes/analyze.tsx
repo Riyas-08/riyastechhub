@@ -70,7 +70,7 @@ function AnalyzePage() {
       });
       await persist({
         data: {
-          memberId: member?.id ?? null,
+          token: member?.token ?? null,
           title: title.trim(),
           description: description.trim(),
           components: result.components,

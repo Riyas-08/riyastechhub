@@ -47,7 +47,7 @@ function ProfilePage() {
   const [showPremium, setShowPremium] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: () => save({ data: { memberId: member!.id, department, yearOfStudy: year } }),
+    mutationFn: () => save({ data: { token: member!.token ?? "", department, yearOfStudy: year } }),
     onSuccess: (updated) => {
       setMember(updated);
       setCollege(college.trim());

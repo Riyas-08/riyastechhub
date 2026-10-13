@@ -17,7 +17,9 @@ const OTP_TTL_MS = 5 * 60 * 1000;
 const REFERRAL_CREDITS = 50;
 
 function randomCode() {
-  return String(Math.floor(100000 + Math.random() * 900000));
+  const buf = new Uint32Array(1);
+  crypto.getRandomValues(buf);
+  return String(100000 + (buf[0]! % 900000));
 }
 
 function makeReferralCode(username: string) {
