@@ -21,6 +21,7 @@ import { Route as EnterRouteImport } from './routes/enter'
 import { Route as GuideRouteImport } from './routes/guide'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as MyselfRouteImport } from './routes/myself'
 import { Route as PlacementRouteImport } from './routes/placement'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -91,6 +92,11 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MyselfRoute = MyselfRouteImport.update({
+  id: '/myself',
+  path: '/myself',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlacementRoute = PlacementRouteImport.update({
   id: '/placement',
   path: '/placement',
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/myself': typeof MyselfRoute
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/myself': typeof MyselfRoute
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/myself': typeof MyselfRoute
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/guide'
     | '/login'
     | '/mcp'
+    | '/myself'
     | '/placement'
     | '/premium'
     | '/profile'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/guide'
     | '/login'
     | '/mcp'
+    | '/myself'
     | '/placement'
     | '/premium'
     | '/profile'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/guide'
     | '/login'
     | '/mcp'
+    | '/myself'
     | '/placement'
     | '/premium'
     | '/profile'
@@ -294,6 +306,7 @@ export interface RootRouteChildren {
   GuideRoute: typeof GuideRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
+  MyselfRoute: typeof MyselfRoute
   PlacementRoute: typeof PlacementRoute
   PremiumRoute: typeof PremiumRoute
   ProfileRoute: typeof ProfileRoute
@@ -391,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/myself': {
+      id: '/myself'
+      path: '/myself'
+      fullPath: '/myself'
+      preLoaderRoute: typeof MyselfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/placement': {
       id: '/placement'
       path: '/placement'
@@ -470,6 +490,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuideRoute: GuideRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
+  MyselfRoute: MyselfRoute,
   PlacementRoute: PlacementRoute,
   PremiumRoute: PremiumRoute,
   ProfileRoute: ProfileRoute,
