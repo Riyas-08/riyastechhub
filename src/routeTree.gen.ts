@@ -24,6 +24,7 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PlacementRouteImport } from './routes/placement'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ReadinessRouteImport } from './routes/readiness'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as RiyaRouteImport } from './routes/riya'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -105,6 +106,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReadinessRoute = ReadinessRouteImport.update({
+  id: '/readiness',
+  path: '/readiness',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/readiness': typeof ReadinessRoute
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/readiness': typeof ReadinessRoute
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/placement': typeof PlacementRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/readiness': typeof ReadinessRoute
   '/referrals': typeof ReferralsRoute
   '/riya': typeof RiyaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/placement'
     | '/premium'
     | '/profile'
+    | '/readiness'
     | '/referrals'
     | '/riya'
     | '/.well-known/oauth-protected-resource'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/placement'
     | '/premium'
     | '/profile'
+    | '/readiness'
     | '/referrals'
     | '/riya'
     | '/.well-known/oauth-protected-resource'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/placement'
     | '/premium'
     | '/profile'
+    | '/readiness'
     | '/referrals'
     | '/riya'
     | '/.well-known/oauth-protected-resource'
@@ -285,6 +297,7 @@ export interface RootRouteChildren {
   PlacementRoute: typeof PlacementRoute
   PremiumRoute: typeof PremiumRoute
   ProfileRoute: typeof ProfileRoute
+  ReadinessRoute: typeof ReadinessRoute
   ReferralsRoute: typeof ReferralsRoute
   RiyaRoute: typeof RiyaRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -399,6 +412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/readiness': {
+      id: '/readiness'
+      path: '/readiness'
+      fullPath: '/readiness'
+      preLoaderRoute: typeof ReadinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/referrals': {
       id: '/referrals'
       path: '/referrals'
@@ -453,6 +473,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlacementRoute: PlacementRoute,
   PremiumRoute: PremiumRoute,
   ProfileRoute: ProfileRoute,
+  ReadinessRoute: ReadinessRoute,
   ReferralsRoute: ReferralsRoute,
   RiyaRoute: RiyaRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
