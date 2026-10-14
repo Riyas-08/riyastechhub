@@ -283,6 +283,28 @@
           "additionalProperties": false
         },
         "outputSchema": null
+      },
+      {
+        "name": "get_placement_guide",
+        "title": "Get Placement page guide",
+        "description": "Read the Placement page: core companies by industry (with tier, job roles and skills) for a branch, plus the 4-year roadmap, interview preparation strategy, skill categories, career paths, resume projects and readiness checklist. Omit branch to list branches.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "branch": {
+              "description": "Branch id, e.g. 'ece', 'eee', 'mech', 'civil'.",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "outputSchema": null
       }
     ]
   }
