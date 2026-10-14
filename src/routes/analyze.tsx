@@ -14,6 +14,7 @@ import { analyzeProject } from "@/lib/ai.functions";
 import { saveProject } from "@/lib/hub.functions";
 import {
   isSeniorYear,
+  pushHistory,
   setProject,
   useHydrated,
   useMember,
@@ -79,6 +80,11 @@ function AnalyzePage() {
       return result;
     },
     onSuccess: (result) => {
+      pushHistory({
+        title: title.trim(),
+        query: description.trim() || title.trim(),
+        componentCount: result.components.length,
+      });
       setProject({ ...result, title: title.trim(), description: description.trim() });
       toast.success(`${result.components.length} components generated`);
       navigate({ to: "/components" });

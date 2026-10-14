@@ -17,6 +17,7 @@ const NAV = [
   { to: "/companies", label: "Companies" },
   { to: "/readiness", label: "Readiness" },
   { to: "/coding", label: "Coding" },
+  { to: "/myself", label: "Myself" },
   { to: "/riya", label: "Riya AI" },
   { to: "/about", label: "Owner" },
   { to: "/connect", label: "Learn & Contact" },

@@ -10,6 +10,15 @@ export type Member = {
   referralCode: string;
   credits: number;
   token?: string;
+  signedInAt?: string;
+};
+
+export type AnalysisHistoryItem = {
+  id: string;
+  title: string;
+  query: string;
+  at: string;
+  componentCount: number;
 };
 
 export type ProjectAnalysis = {
@@ -53,7 +62,13 @@ function write(key: string, value: unknown) {
   window.dispatchEvent(new Event(EVENT));
 }
 
-export const setMember = (m: Member | null) => write(MEMBER_KEY, m);
+export const setMember = (m: Member | null) => {
+  if (m) {
+    const prev = read<Member>(MEMBER_KEY);
+    m = { signedInAt: prev?.signedInAt ?? new Date().toISOString(), ...m };
+  }
+  write(MEMBER_KEY, m);
+};
 export const setProject = (p: ProjectAnalysis | null) => write(PROJECT_KEY, p);
 export const setCart = (c: string[]) => write(CART_KEY, c);
 
@@ -97,3 +112,21 @@ export const usePremium = (): Premium =>
 
 export const isSeniorYear = (year: string | null | undefined) =>
   !!year && (year.startsWith("3rd") || year.startsWith("4th"));
+
+/* ---------- Analysis history ---------- */
+
+const HISTORY_KEY = "riyastech.history";
+
+export function pushHistory(item: Omit<AnalysisHistoryItem, "id" | "at">) {
+  const list = read<AnalysisHistoryItem[]>(HISTORY_KEY) ?? [];
+  const entry: AnalysisHistoryItem = {
+    ...item,
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    at: new Date().toISOString(),
+  };
+  write(HISTORY_KEY, [entry, ...list].slice(0, 50));
+}
+
+export const clearHistory = () => write(HISTORY_KEY, null);
+export const useHistory = (): AnalysisHistoryItem[] =>
+  useStored<AnalysisHistoryItem[]>(HISTORY_KEY) ?? [];
